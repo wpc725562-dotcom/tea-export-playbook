@@ -145,6 +145,21 @@
   }
   .notice b{color:#8a6420;}
 
+  /* Plain-guide banner */
+  .plain-banner{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    background:linear-gradient(100deg,#eaf5ef,#fdf4e3);
+    border:1.5px solid #cfe6da; border-radius:14px;
+    padding:18px 22px; margin:0 0 38px;
+    text-decoration:none; color:inherit;
+    transition:border-color .18s, box-shadow .18s, transform .18s;
+  }
+  .plain-banner:hover{border-color:#a9d4be; box-shadow:0 10px 26px rgba(20,60,40,.09); transform:translateY(-2px); text-decoration:none;}
+  .plain-banner .pb-ic{font-size:26px; flex:none;}
+  .plain-banner .pb-tx{flex:1 1 320px; font-size:14.8px; color:var(--ink-2); line-height:1.7;}
+  .plain-banner .pb-tx b{color:var(--green); font-size:16px; display:block; margin-bottom:2px;}
+  .plain-banner .pb-go{font-size:14.5px; font-weight:700; color:var(--green); flex:none;}
+
   footer.site-foot{
     margin-top:56px; padding-top:24px; border-top:1px solid var(--line);
     font-size:12.5px; color:var(--muted); line-height:1.85;
@@ -170,6 +185,7 @@
     <a class="brand" href="index.html"><span class="dot"></span>茶叶出海 · 决策资料包</a>
     <div class="links">
       <a href="index.html" class="active">首页</a>
+      <a href="reports/plain-guide.html">白话版</a>
       <a href="reports/feasibility.html">可行性分析</a>
       <a href="reports/dtc-playbook.html">零售运营</a>
       <a href="reports/skill-landscape.html">工具调研</a>
@@ -221,6 +237,15 @@
       <div class="l">中国茶叶出口目的地<br>前 20 国占总量 82.66%</div>
     </div>
   </div>
+
+  <a class="plain-banner" href="reports/plain-guide.html">
+    <span class="pb-ic">💡</span>
+    <span class="pb-tx">
+      <b>不想看技术细节？先看「白话版」</b>
+      没有一个技术词，用大白话讲清楚这套工具能帮你干什么。一分钟看完。
+    </span>
+    <span class="pb-go">去看看 →</span>
+  </a>
 
   <div class="sec-head">
     <h2>四份文档</h2><span class="en">THE DOCUMENTS</span>

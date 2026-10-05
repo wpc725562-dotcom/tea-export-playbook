@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一分钟看懂 · 这套工具能帮你干什么</title>
+<meta name="description" content="不用懂技术，一分钟看懂这套茶叶出口工具能帮你做什么。">
+<style>
+  :root{
+    --ink:#23282a; --ink-2:#4a5356; --muted:#78858a; --faint:#9fadb2;
+    --bg:#fdfbf6; --card:#ffffff; --line:#eae4d8; --line-2:#f4efe4;
+    --green:#1f6b4a; --green-2:#2f8f63; --green-3:#eaf5ef;
+    --gold:#a8761a; --gold-bg:#fdf4e3;
+    --red:#b5342a; --red-bg:#fceeec;
+    --blue:#2563a8; --blue-bg:#edf3fa;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    font-size:18px; line-height:1.9; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px; margin:0 auto; padding:0 24px 100px;}
+
+  header.hero{background:linear-gradient(140deg,#134230 0%,#22694b 55%,#3f9a6d 100%); color:#fff; padding:64px 24px 56px;}
+  .hero-in{max-width:880px; margin:0 auto; padding:0 24px;}
+  .hero .kicker{font-size:14px; letter-spacing:.2em; color:#9fe0bd; font-weight:700; margin-bottom:16px;}
+  .hero h1{font-size:40px; line-height:1.3; margin:0 0 18px; font-weight:700; letter-spacing:-.01em;}
+  .hero p.sub{font-size:19px; color:#d8eee2; margin:0; max-width:700px;}
+
+  h2{font-size:27px; margin:56px 0 8px; font-weight:700; line-height:1.4;}
+  h2 .n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; background:var(--green); color:#fff;
+    font-size:19px; margin-right:12px; transform:translateY(-2px);
+  }
+  h3{font-size:21px; margin:36px 0 10px; font-weight:700; color:var(--green);}
+  p{margin:14px 0; color:var(--ink-2);}
+  ul{margin:14px 0; padding-left:26px; color:var(--ink-2);}
+  li{margin:9px 0;}
+  strong{color:var(--ink); font-weight:700;}
+  .big{font-size:21px; color:var(--ink); font-weight:700;}
+
+  .lead{
+    background:var(--card); border:2px solid var(--green-3); border-radius:18px;
+    padding:30px 32px; margin:36px 0; font-size:22px; line-height:1.8; color:var(--ink);
+    box-shadow:0 10px 30px rgba(20,60,40,.07);
+  }
+  .lead b{color:var(--green);}
+
+  .box{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin:22px 0;}
+  .box .t{font-size:19px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:10px;}
+  .box .t .ic{font-size:24px;}
+
+  .tip{background:var(--gold-bg); border-left:5px solid var(--gold); border-radius:12px; padding:20px 24px; margin:22px 0; font-size:18px; color:#5c4a1e;}
+  .tip b{color:#8a6420;}
+
+  .danger{background:var(--red-bg); border-left:5px solid var(--red); border-radius:12px; padding:20px 24px; margin:22px 0; font-size:18px; color:#7d2b23;}
+  .danger b{color:var(--red);}
+
+  .ok{background:var(--green-3); border-left:5px solid var(--green); border-radius:12px; padding:20px 24px; margin:22px 0; font-size:18px; color:#1d4b37;}
+
+  /* 对话气泡 */
+  .talk{margin:24px 0;}
+  .talk .who{font-size:15px; font-weight:700; color:var(--muted); margin-bottom:8px;}
+  .talk .say{
+    background:var(--card); border:1px solid var(--line); border-radius:4px 18px 18px 18px;
+    padding:18px 22px; font-size:19px; color:var(--ink); display:inline-block; max-width:100%;
+  }
+  .talk.me .who{color:var(--blue);}
+  .talk.me .say{background:var(--blue-bg); border-color:#d3e2f2; border-radius:18px 4px 18px 18px; color:#1e4a75;}
+  .talk.me{text-align:right;}
+
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0;}
+  .three .c{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px 20px; text-align:center;}
+  .three .c .ic{font-size:32px; margin-bottom:10px;}
+  .three .c .h{font-size:18px; font-weight:700; margin-bottom:8px;}
+  .three .c .d{font-size:15.5px; color:var(--muted); line-height:1.7;}
+
+  .steps{counter-reset:s; margin:26px 0;}
+  .step{position:relative; padding:20px 24px 20px 76px; background:var(--card); border:1px solid var(--line); border-radius:16px; margin-bottom:14px; font-size:19px;}
+  .step::before{counter-increment:s; content:counter(s); position:absolute; left:22px; top:20px; width:38px; height:38px; background:var(--green); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:19px;}
+
+  .btn{
+    display:inline-block; background:var(--green); color:#fff; text-decoration:none;
+    padding:15px 30px; border-radius:12px; font-size:19px; font-weight:700; margin:14px 0;
+  }
+  .btn:hover{background:#17543a;}
+
+  footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--line); font-size:14.5px; color:var(--muted); line-height:1.9;}
+  footer b{color:var(--ink-2);}
+
+  @media (max-width:760px){
+    body{font-size:17px;}
+    .hero h1{font-size:29px;}
+    .hero p.sub{font-size:17px;}
+    h2{font-size:23px;}
+    .lead{font-size:19px; padding:24px 22px;}
+    .three{grid-template-columns:1fr;}
+    .step{font-size:17px; padding-left:70px;}
+  }
+</style>
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-in">
+    <a class="brand" href="../index.html"><span class="dot"></span>茶叶出海 · 决策资料包</a>
+    <div class="links">
+      <a href="../index.html">首页</a>
+      <a href="plain-guide.html" class="active">白话版</a>
+      <a href="feasibility.html">可行性分析</a>
+      <a href="dtc-playbook.html">零售运营</a>
+      <a href="skill-landscape.html">工具调研</a>
+      <a href="skill-mcp-implementation.html">落地方案</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="kicker">不用懂技术</div>
+    <h1>一分钟看懂<br>这套工具能帮你干什么</h1>
+    <p class="sub">下面全部是大白话，没有一个技术词。看完你就知道它值不值得用。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="lead">
+    一句话：<b>我给你请了个懂茶叶出口的老师傅，住在你电脑里。</b>
+  </div>
+
+  <p>他会三件事。我一件一件说。</p>
+
+  <div class="three">
+    <div class="c">
+      <div class="ic">📦</div>
+      <div class="h">检查货</div>
+      <div class="d">出货前先看看<br>能不能过人家的关</div>
+    </div>
+    <div class="c">
+      <div class="ic">🧮</div>
+      <div class="h">算账</div>
+      <div class="d">这笔生意<br>到底赚不赚钱</div>
+    </div>
+    <div class="c">
+      <div class="ic">🚚</div>
+      <div class="h">指路</div>
+      <div class="d">货该走空运<br>还是走海运</div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <h2><span class="n">1</span>帮你检查货能不能出门</h2>
+
+  <p>就像你要坐飞机，得先看看包里有没有不能带的东西。</p>
+  <p>你要把茶叶卖到外国，人家也有一堆规矩。不合规矩，货到了人家门口，会被扣下、退回，甚至烧掉。</p>
+  <p class="big">老师傅帮你提前查。</p>
+
+  <p>比方说：你要卖到欧洲，告诉他"我这批茶查出有蒽醌、有啶虫脒"。他马上说：</p>
+
+  <div class="danger">
+    <b>不行，这批货出不去。</b><br>
+    然后告诉你为什么不行、该怎么改。
+  </div>
+
+  <h3>这里有个特别要紧的地方</h3>
+
+  <p>欧洲有个规矩，叫<strong>"查得出来就不行"</strong>。</p>
+
+  <div class="tip">
+    打个比方。考试老师说你考 60 分及格。<br>
+    欧洲这个规矩<strong>不是 60 分及格</strong> —— 是<strong>只要你错一个字，就不给分</strong>。
+  </div>
+
+  <p>所以你说"我的茶很干净"，没用。得拿去化验，化验单上没查出来，才算过。</p>
+
+  <h3>还有一件事更妙</h3>
+
+  <p>你查出那个叫"蒽醌"的东西，第一反应可能是"那我少打点药"。</p>
+
+  <div class="danger">
+    <b>没用。</b>这东西不是打药来的，是你烘干茶叶时烧煤烧出来的。
+  </div>
+
+  <p>就像你炒菜，菜本身没问题，是<strong>锅底的黑灰蹭上去了</strong>。</p>
+
+  <div class="ok">
+    所以要改的不是药，是<strong>换个烘干的炉子</strong>（烧电、烧气都行）。
+  </div>
+
+  <p>这种坑一般人不知道。老师傅知道。</p>
+
+  <!-- 2 -->
+  <h2><span class="n">2</span>帮你算账</h2>
+
+  <p>他把账算得清清楚楚：运费多少、关税多少、平台抽走多少、最后到手多少。</p>
+
+  <p>给你说个他算出来的真事：</p>
+
+  <div class="tip">
+    有个卖货的网站叫亚马逊，它有个怪规矩 ——<br>
+    <strong>你卖 15 块，它抽 8%；你卖 15 块 1 分，它抽 15%。</strong><br><br>
+    就差一分钱，手续费从 1 块 2 变成 2 块 2。
+  </div>
+
+  <p>老师傅会提醒你：<strong>要么定 14 块 9，要么干脆冲到 22 块以上，千万别卡在 15 块 5。</strong></p>
+
+  <p>这种亏，不懂的人一年能亏好几千。</p>
+
+  <!-- 3 -->
+  <h2><span class="n">3</span>告诉你货怎么运</h2>
+
+  <p>绿茶娇气，怕闷怕放，得走空运 —— 贵，但是快。</p>
+  <p>普洱这种越放越香的，走海运省钱，路上晃一个月反而更好。</p>
+  <p>老师傅看你是什么茶、值多少钱、能放多久，告诉你走哪条路。</p>
+
+  <!-- 最值钱 -->
+  <h2><span class="n">★</span>他最值钱的地方：不懂就说不懂</h2>
+
+  <p>这点最要紧。</p>
+
+  <p>很多工具，你问它，它不懂也硬编一个答案给你，说得还挺像回事。你信了，货被扣了，哭都来不及。</p>
+
+  <p class="big">这个老师傅不一样。</p>
+
+  <div class="talk me">
+    <div class="who">你</div>
+    <div class="say">这批茶能出到德国吗？</div>
+  </div>
+
+  <div class="talk">
+    <div class="who">老师傅</div>
+    <div class="say">你还没给我化验单。<strong>没化验单，我没法判断。你先去化验。</strong></div>
+  </div>
+
+  <p>他绝不会说"应该没事吧"。</p>
+
+  <div class="talk me">
+    <div class="who">你</div>
+    <div class="say">我查出来一个农药叫"氟虫腈"，超标吗？</div>
+  </div>
+
+  <div class="talk">
+    <div class="who">老师傅</div>
+    <div class="say">我这儿没这个记录。但<strong>这不代表你的茶没问题</strong>。<br>你得去官网查，网址给你。</div>
+  </div>
+
+  <div class="ok">
+    <strong>这种"不懂就说不懂"的脾气，是我特意给他定的。</strong>
+  </div>
+
+  <!-- 你要做的 -->
+  <h2><span class="n">✓</span>现在，你只需要做一件事</h2>
+
+  <p>就一件。</p>
+
+  <p>东西我都装好了，也试过了，全都正常。</p>
+
+  <p>但电脑有个安全设置，<strong>它不会自己打开新装的东西，得你亲手按一下开关。</strong></p>
+
+  <div class="steps">
+    <div class="step">打开 WorkBuddy 的<strong>连接器管理</strong>页面</div>
+    <div class="step">看<strong>右上角</strong>，有个 <strong>"自定义连接器"</strong></div>
+    <div class="step">里面找到 <strong>tea-export</strong>，点一下 <strong>"信任"</strong></div>
+  </div>
+
+  <p class="big">点完，我就能直接用这个老师傅帮你干活了。</p>
+
+  <h3>想看详细的</h3>
+  <p>上面讲的是大白话版本。如果你想知道它具体是怎么做的，看这份：</p>
+  <a class="btn" href="skill-mcp-implementation.html">看技术版落地方案 →</a>
+
+  <footer>
+    <p>编制：<b>02</b> · 2026-10-06</p>
+  </footer>
+
+</div>
+
+<div class="page-pager">
+  <a href="../index.html"><div class="lbl">返回</div><div class="ttl">资料包首页</div><div class="sub">四份文档总览</div></a>
+  <a href="skill-mcp-implementation.html"><div class="lbl">下一份 →</div><div class="ttl">跨境电商 Skill / MCP 功能落地方案</div><div class="sub">技术版：怎么实现的</div></a>
+</div>
+
+</body>
+</html>
