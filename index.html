@@ -99,6 +99,7 @@
   .rc.r1::before{background:linear-gradient(180deg,#2f8f63,#1f6b4a);}
   .rc.r2::before{background:linear-gradient(180deg,#8a6cc4,#6b4b9a);}
   .rc.r3::before{background:linear-gradient(180deg,#5a76c4,#2f4b8f);}
+  .rc.r4::before{background:linear-gradient(180deg,#c79a3a,#a8761a);}
   .rc:hover{border-color:#c4d0c8; box-shadow:0 12px 30px rgba(20,40,30,.09); transform:translateY(-2px);}
   .rc .top{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;}
   .rc .idx{
@@ -108,10 +109,12 @@
   .rc.r1 .idx{background:#1f6b4a;}
   .rc.r2 .idx{background:#6b4b9a;}
   .rc.r3 .idx{background:#2f4b8f;}
+  .rc.r4 .idx{background:#a8761a;}
   .rc h3{font-size:20px; margin:0; font-weight:700; letter-spacing:-.01em;}
   .rc .q{font-size:14px; color:var(--green); font-weight:600; margin:2px 0 10px;}
   .rc.r2 .q{color:var(--purple);}
   .rc.r3 .q{color:var(--indigo);}
+  .rc.r4 .q{color:var(--gold);}
   .rc p{font-size:14.3px; color:var(--ink-2); margin:0 0 14px;}
   .rc .tags{display:flex; flex-wrap:wrap; gap:7px;}
   .rc .tags span{
@@ -170,6 +173,7 @@
       <a href="reports/feasibility.html">可行性分析</a>
       <a href="reports/dtc-playbook.html">零售运营</a>
       <a href="reports/skill-landscape.html">工具调研</a>
+      <a href="reports/skill-mcp-implementation.html">落地方案</a>
     </div>
   </div>
 </nav>
@@ -178,7 +182,7 @@
   <div class="hero-in">
     <div class="kicker">Tea Export · Decision Package</div>
     <h1>广东茶叶货源<br><em>出海决策资料包</em></h1>
-    <p class="sub">从货源优势到海外订单的完整论证：目标市场分层、准入合规、物流、定价、渠道、结算与风险。三份报告，一条从「能不能做」到「怎么做」的完整链路。</p>
+    <p class="sub">从货源优势到海外订单的完整论证：目标市场分层、准入合规、物流、定价、渠道、结算与风险。四份文档，一条从「能不能做」到「怎么做」再到「工具落地」的完整链路。</p>
     <div class="chips">
       <span>目标市场分层</span>
       <span>准入与认证</span>
@@ -186,6 +190,7 @@
       <span>电商平台费率</span>
       <span>风险与应对</span>
       <span>工具生态调研</span>
+      <span>工具落地实现</span>
     </div>
     <div class="meta">
       <span>编制 <b>02</b></span>
@@ -218,9 +223,9 @@
   </div>
 
   <div class="sec-head">
-    <h2>三份报告</h2><span class="en">THE REPORTS</span>
+    <h2>四份文档</h2><span class="en">THE DOCUMENTS</span>
   </div>
-  <p class="sec-desc">按阅读顺序排列。建议从第一份开始，它决定了后两份的取舍方向。</p>
+  <p class="sec-desc">按阅读顺序排列。前三份回答「能不能做、怎么做、有没有工具」，第四份是工具的落地实现。</p>
 
   <div class="cards">
 
@@ -263,12 +268,25 @@
       </div>
     </a>
 
+    <a class="rc r4" href="reports/skill-mcp-implementation.html">
+      <div class="go">阅读 →</div>
+      <div class="top">
+        <span class="idx">04</span>
+        <h3>跨境电商 Skill / MCP 功能落地方案</h3>
+      </div>
+      <div class="q">空白补上了吗？工具真的能跑吗？</div>
+      <p>把调研结论做成可运行的工具：<strong>8 个 MCP 工具</strong>（目的国准入查询、出货前合规预检、HS 编码、到岸成本、平台费用、物流推荐）+ <strong>3 个 Skill</strong>（合规预检 / 选品 / 买家背调）+ <strong>21 项自动化验证</strong>。含三层架构、四步安装、依赖与配置要点、真实运行输出，以及验证覆盖了什么、没覆盖什么。</p>
+      <div class="tags">
+        <span>MCP 服务端</span><span>Skill 工作流</span><span>证据闸</span><span>四步安装</span><span>21 项验证</span>
+      </div>
+    </a>
+
   </div>
 
   <div class="sec-head" style="margin-top:52px">
     <h2>怎么读这份资料</h2><span class="en">HOW TO READ</span>
   </div>
-  <p class="sec-desc">三份报告是递进关系，不是并列选项。</p>
+  <p class="sec-desc">四份文档是递进关系，不是并列选项。</p>
 
   <div class="grid3">
     <div class="mini">

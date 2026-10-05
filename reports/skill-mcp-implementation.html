@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跨境电商 Skill / MCP 功能落地方案</title>
+<meta name="description" content="基于开源调研报告，把「跨境电商 Skill / MCP」从调研结论做成可运行的工具：8 个 MCP 工具 + 3 个 Skill + 21 项自动化验证。">
+<style>
+  :root{
+    --ink:#1b1e1c; --ink-2:#3c4440; --muted:#6b7a72; --faint:#98a49d;
+    --bg:#f8f7f4; --card:#ffffff; --line:#e4e1d8; --line-2:#efece4;
+    --green:#1f6b4a; --green-2:#2f8f63; --green-3:#e8f2ec; --green-4:#d8ece1;
+    --gold:#a8761a; --gold-bg:#fbf3e2;
+    --red:#b5342a; --red-bg:#fbecea;
+    --blue:#2563a8; --blue-bg:#eaf1f9;
+    --purple:#6b4b9a; --purple-bg:#f0ebf8;
+    --indigo:#2f4b8f; --indigo-bg:#e9eefb; --indigo-2:#4560a8;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    font-size:15.5px; line-height:1.75; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 24px 100px;}
+
+  header.hero{background:linear-gradient(140deg,#0e2119 0%,#1b4633 52%,#2f7a54 100%); color:#fff; padding:54px 24px 46px;}
+  .hero-in{max-width:1020px; margin:0 auto; padding:0 24px;}
+  .hero .kicker{font-size:12.5px; letter-spacing:.22em; text-transform:uppercase; color:#8fd8b0; font-weight:700; margin-bottom:14px;}
+  .hero h1{font-size:35px; line-height:1.25; margin:0 0 14px; font-weight:700; letter-spacing:-.01em;}
+  .hero p.sub{font-size:16px; color:#d3e8dc; margin:0 0 26px; max-width:780px;}
+  .hero .meta{display:flex; flex-wrap:wrap; gap:10px 26px; font-size:13px; color:#b0cdbe; border-top:1px solid rgba(255,255,255,.18); padding-top:18px;}
+  .hero .meta b{color:#fff; font-weight:600;}
+
+  .metrics{display:grid; grid-template-columns:repeat(4,1fr); background:var(--card); border:1px solid var(--line); border-radius:14px; margin:-26px auto 40px; overflow:hidden; box-shadow:0 10px 30px rgba(16,40,28,.14); position:relative; z-index:2;}
+  .metric{padding:20px 20px 18px; border-right:1px solid var(--line-2);}
+  .metric:last-child{border-right:none;}
+  .metric .v{font-size:24px; font-weight:700; color:var(--green); letter-spacing:-.02em; line-height:1.2;}
+  .metric .v small{font-size:13px; color:var(--muted); font-weight:600;}
+  .metric .l{font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.5;}
+
+  section{margin:44px 0 0;}
+  h2{font-size:23px; margin:0 0 6px; padding-top:8px; font-weight:700; letter-spacing:-.01em; display:flex; align-items:baseline; gap:12px;}
+  h2 .num{font-size:13px; color:#fff; background:var(--green); border-radius:7px; padding:3px 9px; font-weight:700; flex:none; transform:translateY(-3px);}
+  h2 .en{font-size:12px; color:var(--faint); font-weight:500; letter-spacing:.06em;}
+  h3{font-size:17px; margin:30px 0 10px; font-weight:700; padding-left:12px; border-left:3px solid var(--green-2);}
+  h4{font-size:15px; margin:20px 0 8px; font-weight:700; color:var(--ink-2);}
+  p{margin:10px 0; color:var(--ink-2);}
+  ul,ol{margin:10px 0; padding-left:22px; color:var(--ink-2);}
+  li{margin:5px 0;}
+  strong{color:var(--ink); font-weight:700;}
+  code{background:#eef4f0; border:1px solid #dbe8e1; border-radius:4px; padding:1px 6px; font-size:12.8px; font-family:"Cascadia Code",Consolas,monospace; color:var(--green);}
+  a{color:var(--green); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:18px 0;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .mini{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .mini h4{margin:0 0 8px; font-size:15px;}
+  .mini p{font-size:14px; margin:6px 0 0;}
+  .mini .tag{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:20px; margin-bottom:9px; letter-spacing:.03em;}
+  .t-green{background:var(--green-3); color:var(--green);}
+  .t-blue{background:var(--blue-bg); color:var(--blue);}
+  .t-gold{background:var(--gold-bg); color:var(--gold);}
+  .t-red{background:var(--red-bg); color:var(--red);}
+  .t-indigo{background:var(--indigo-bg); color:var(--indigo);}
+  .t-purple{background:var(--purple-bg); color:var(--purple);}
+
+  .callout{border-radius:11px; padding:16px 20px 16px 18px; margin:18px 0; border-left:4px solid; font-size:14.5px;}
+  .callout p{margin:6px 0;}
+  .callout .h{font-weight:700; margin-bottom:4px; font-size:14.5px;}
+  .c-verdict{background:var(--green-3); border-color:var(--green);}
+  .c-verdict .h{color:var(--green);}
+  .c-warn{background:var(--red-bg); border-color:var(--red);}
+  .c-warn .h{color:var(--red);}
+  .c-note{background:var(--gold-bg); border-color:var(--gold);}
+  .c-note .h{color:var(--gold);}
+  .c-info{background:var(--blue-bg); border-color:var(--blue);}
+  .c-info .h{color:var(--blue);}
+  .c-indigo{background:var(--indigo-bg); border-color:var(--indigo);}
+  .c-indigo .h{color:var(--indigo);}
+
+  .tbl-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:var(--card);}
+  table{border-collapse:collapse; width:100%; font-size:13.4px; min-width:720px;}
+  thead th{background:#eff5f1; color:var(--ink); text-align:left; font-weight:700; padding:12px 14px; border-bottom:1.5px solid var(--line); white-space:nowrap; font-size:12.8px;}
+  tbody td{padding:11px 14px; border-bottom:1px solid var(--line-2); vertical-align:top; color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#f9fbfa;}
+  td strong{color:var(--ink);}
+  .pill{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:20px; white-space:nowrap;}
+  .p1{background:var(--green-3); color:var(--green);}
+  .p2{background:var(--blue-bg); color:var(--blue);}
+  .p3{background:var(--gold-bg); color:var(--gold);}
+  .p4{background:var(--red-bg); color:var(--red);}
+  .repo{font-family:"Cascadia Code",Consolas,monospace; font-size:12.5px; color:var(--green); font-weight:600; word-break:break-all;}
+  .num-cell{font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+  pre{background:#12211a; color:#d6ead9; border-radius:11px; padding:16px 18px; overflow-x:auto; font-size:12.8px; line-height:1.7; font-family:"Cascadia Code",Consolas,monospace; margin:16px 0;}
+  pre code{background:none; border:none; color:inherit; padding:0; font-size:inherit;}
+  pre .cmt{color:#7fa48d;}
+  pre .out{color:#e8d9a8;}
+
+  .chart-box{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:18px 0;}
+  .chart-box .cap{font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.6;}
+  .chart-box .ttl{font-size:14.5px; font-weight:700; margin-bottom:16px; color:var(--ink);}
+
+  .steps{counter-reset:s; margin:18px 0;}
+  .step{position:relative; padding:16px 20px 16px 62px; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px;}
+  .step::before{counter-increment:s; content:counter(s); position:absolute; left:18px; top:16px; width:30px; height:30px; background:var(--green); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .step .st{font-weight:700; font-size:15px; margin-bottom:4px;}
+  .step .sd{font-size:14px; color:var(--ink-2);}
+
+  .check{list-style:none; padding-left:0;}
+  .check li{padding-left:26px; position:relative; margin:7px 0; font-size:14.5px;}
+  .check li::before{content:"☐"; position:absolute; left:0; top:0; color:var(--green); font-size:15px; font-weight:700;}
+  .check li.ok::before{content:"☑"; color:var(--green);}
+
+  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); line-height:1.8;}
+  footer b{color:var(--ink-2);}
+
+  @media (max-width:820px){
+    .metrics{grid-template-columns:1fr 1fr;}
+    .metric:nth-child(2){border-right:none;}
+    .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--line-2);}
+    .grid2,.grid3{grid-template-columns:1fr;}
+    .hero h1{font-size:27px;}
+    body{font-size:15px;}
+  }
+</style>
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-in">
+    <a class="brand" href="../index.html"><span class="dot"></span>茶叶出海 · 决策资料包</a>
+    <div class="links">
+      <a href="../index.html">首页</a>
+      <a href="feasibility.html">可行性分析</a>
+      <a href="dtc-playbook.html">零售运营</a>
+      <a href="skill-landscape.html">工具调研</a>
+      <a href="skill-mcp-implementation.html" class="active">落地方案</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="kicker">Skill / MCP Implementation</div>
+    <h1>跨境电商 Skill / MCP<br>功能落地方案</h1>
+    <p class="sub">上一份报告得出结论：生态里没有服务「食品出口目的国准入」的工具，这是空白。这份文档就是把这个空白补上 —— 从调研结论出发，做出一套能跑的工具：<strong>8 个 MCP 工具 + 3 个 Skill + 21 项自动化验证，全部通过</strong>。</p>
+    <div class="meta">
+      <span>编制 <b>02</b></span>
+      <span>日期 <b>2026-10-05</b></span>
+      <span>交付形态 <b>MCP 服务端 + Skill 包</b></span>
+      <span>验证结果 <b>21 / 21 通过</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="v">8 <small>个</small></div>
+      <div class="l">MCP 工具<br>覆盖合规 / 成本 / 物流 / 平台</div>
+    </div>
+    <div class="metric">
+      <div class="v">3 <small>个</small></div>
+      <div class="l">Skill 工作流<br>合规预检 · 选品 · 买家背调</div>
+    </div>
+    <div class="metric">
+      <div class="v">21 / 21</div>
+      <div class="l">自动化验证全通过<br>含真实 MCP 协议握手</div>
+    </div>
+    <div class="metric">
+      <div class="v">6 <small>国</small></div>
+      <div class="l">目的国准入数据<br>欧盟 / 美 / 日 / 沙特 / 东盟 / 西北非</div>
+    </div>
+  </div>
+
+  <!-- 00 -->
+  <section id="s0">
+    <h2><span class="num">00</span>结论先行 <span class="en">EXECUTIVE SUMMARY</span></h2>
+
+    <div class="callout c-verdict">
+      <div class="h">一句话结论</div>
+      <p>这套工具<strong>已经做完并且跑通了</strong>。它把前三份报告里最容易出错、最依赖人工查证的三件事 —— <strong>目的国农残准入判断、到岸成本与平台费用测算、物流方案取舍</strong> —— 变成了可被 AI 直接调用的标准化能力。代码在本机 <code>tea-export-kit/</code>，<strong>21 项验证全部通过（含真实的 MCP stdio 协议握手）</strong>。</p>
+    </div>
+
+    <div class="grid3">
+      <div class="mini">
+        <span class="tag t-green">已经能用的</span>
+        <h4>出货前合规预检</h4>
+        <p>输入目的国 + 本批次检测结果，直接输出 <strong>🚫 阻断 / ⚠️ 有风险 / ✅ 通过</strong> 三级结论，并列出必须先解决的动作。欧盟 0.01 检测限、蒽醌工艺来源、有机认证互认这些最容易踩的坑，都写进了判断逻辑。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-blue">已经能用的</span>
+        <h4>成本与费用测算</h4>
+        <p>到岸成本（含关税、附加费、隐性成本清单）与平台费用（亚马逊 $15 定价断点、Etsy 费率、Temu 品牌风险提示）都能一键算，输出费用拆解表与毛利率。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-gold">已经能用的</span>
+        <h4>方法论文档化</h4>
+        <p>三源交叉验证、关键词污染自检、买家背调五必查 —— 这些「怎么判断」的纪律被写进 Skill，<strong>换个会话、换个人用，结论口径不会漂</strong>。</p>
+      </div>
+    </div>
+
+    <h3>四个关键判断</h3>
+    <ol>
+      <li><strong>这套东西的价值不在「自动化」，在「防错」。</strong>跨境合规最贵的错误是「我以为能过」。工具把判断依据固化成规则，把「数据不足」显式暴露出来 —— 拿不到本批次检测报告时，它<strong>拒绝给出「通过」</strong>，而不是猜一个。</li>
+      <li><strong>只借鉴设计模式，不复制代码。</strong>调研报告里点明：头部开源仓库（含 1302⭐、936⭐）<strong>多未声明许可证</strong>，商用有法律风险。本项目全部为原创实现，只吸收了「证据闸」「SKILL.md 目录结构」「三源交叉验证」这些<strong>方法论层面的做法</strong>，不涉及任何代码复用，因此没有许可证包袱。</li>
+      <li><strong>数据可维护性是设计核心。</strong>所有准入数据、费率、物流参数都在 <code>data/*.json</code> 里，<strong>改 JSON 就能更新，不用碰代码</strong>。每条输出都自动附加数据版本号与免责声明，避免「半年前的结论当成今天的事实用」。</li>
+      <li><strong>唯一的用户侧动作是「点一次信任」。</strong>工具装好、验证通过，但 MCP 出于安全设计<strong>不会自动激活</strong>。需要你在连接器管理页手动信任一次。这一步无法由程序代劳。</li>
+    </ol>
+
+    <div class="callout c-note">
+      <div class="h">这份文档回答什么</div>
+      <p>① 这套功能的目标与适用场景；② 调研报告里哪些项目、哪些设计被真正用上了；③ 具体怎么实现、怎么装；④ 依赖什么、怎么配、怎么验证。</p>
+    </div>
+  </section>
+
+  <!-- 01 -->
+  <section id="s1">
+    <h2><span class="num">01</span>核心目标与适用场景 <span class="en">GOAL &amp; SCOPE</span></h2>
+
+    <h3>要解决的问题</h3>
+    <p>调研报告的结论是明确的：GitHub 上约 <strong>70%</strong> 的跨境 Skill 围绕亚马逊运营（选品、Listing、广告、VOC），而「<strong>食品/农产品出口目的国准入</strong>」方向只有零星一两个，且都做中国国内标准（GB 7718、GB 2760），<strong>没有一个成熟的、面向出口目的国的工具</strong>。</p>
+    <p>这意味着：第一份报告里查到的欧盟 MRL 0.01、美国 FSVP、日本肯定列表、沙特 SFDA —— 目前<strong>没有任何现成工具帮你自动化</strong>。每次出货都要重新翻官方数据库、重新算一遍成本、重新判断物流，既慢又容易漏。</p>
+
+    <div class="callout c-verdict">
+      <div class="h">核心目标</div>
+      <p>把「<strong>出货前该查什么、怎么判断、算出多少钱</strong>」这条链路，从散落在报告和脑中的经验，固化成<strong>可被 AI 直接调用、输出带来源与日期的标准化能力</strong>。目标不是替代报关行或检测机构，而是<strong>让错误在出货前就暴露出来</strong>。</p>
+    </div>
+
+    <h3>三个核心场景</h3>
+    <div class="grid3">
+      <div class="mini">
+        <span class="tag t-green">场景一</span>
+        <h4>出货前合规预检</h4>
+        <p><strong>触发</strong>：「这批茶能不能出到德国」「检测出啶虫脒 0.008 能过欧盟吗」<br>
+        <strong>做什么</strong>：拉目的国准入要求 → 拿本批次检测结果比对高风险物质清单 → 给三级结论 + 待办清单 + 随货文件清单。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-blue">场景二</span>
+        <h4>市场与成本验证</h4>
+        <p><strong>触发</strong>：「我的单丛该卖到哪个国家」「这个价还有多少利润」<br>
+        <strong>做什么</strong>：三源交叉验证需求真伪 → 六维打分 → 用真实运费/关税算到岸成本 → 用平台费率反推定价与毛利。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-gold">场景三</span>
+        <h4>买家与渠道尽调</h4>
+        <p><strong>触发</strong>：「这个海外买家靠不靠谱」「该不该接这个订单」<br>
+        <strong>做什么</strong>：买家五必查项 + 红黄绿评级；渠道层面提示 Temu 这类伤品牌风险、亚马逊定价断点这类隐性坑。</p>
+      </div>
+    </div>
+
+    <h3>适用与不适用</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:32%">维度</th><th>适用</th><th>不适用</th></tr></thead>
+        <tbody>
+          <tr><td><strong>业务形态</strong></td><td>茶叶出口（含小批量成品茶零售、批量外贸）</td><td>非食品类跨境电商（工具对茶类 MRL 与 HS 编码做了专门建模）</td></tr>
+          <tr><td><strong>决策阶段</strong></td><td>出货前的合规预检、定价、物流选型、市场初筛</td><td>替代报关行、检测机构、律师出具正式意见</td></tr>
+          <tr><td><strong>数据前提</strong></td><td>有本批次检测报告时，结论可直接用于决策</td><td>无检测报告时，工具会<strong>明确拒绝判定</strong>，只给待办清单</td></tr>
+          <tr><td><strong>地域覆盖</strong></td><td>已收录 6 个市场：欧盟、美国、日本、沙特、东盟、摩洛哥/塞内加尔</td><td>未收录市场会提示「需新增数据」，不会硬编答案</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="s2">
+    <h2><span class="num">02</span>可复用的开源项目与技术方案 <span class="en">WHAT WAS BORROWED</span></h2>
+
+    <p>调研报告里筛出 20 个核心项目、深度点评 8 个。落到实现上，真正被用上的是<strong>四个设计模式</strong>和<strong>一套协议标准</strong> —— 注意：用的是<strong>做法</strong>，不是代码。</p>
+
+    <h3>从调研报告到本项目的映射</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:24%">来源项目</th><th style="width:22%">借鉴的模块</th><th>落到本项目的哪个部分</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="repo">noique/cross-border-ecommerce-skills</span><br><span class="pill p3">未声明许可</span></td>
+            <td><strong>「证据闸」机制</strong><br>数据不足就说数据不足，不编数字</td>
+            <td>服务端每条输出强制附加 <code>_src()</code>（数据版本 + 编制日期 + 免责声明）；<code>check_mrl</code> 未命中时明确写「<strong>这不等于该物质合规</strong>」并给官方查询入口；无检测结果时<strong>拒绝判定「通过」</strong>。这是整套工具最重要的设计。</td>
+          </tr>
+          <tr>
+            <td><span class="repo">zach22-1999/amazon-skills</span><br><span class="pill p1">MIT</span></td>
+            <td><strong>Skill 目录结构</strong><br><code>SKILL.md</code> + <code>references/</code></td>
+            <td>三个 Skill 全部采用同一布局：<code>SKILL.md</code>（何时用 / 铁律 / 工作流 / 输出格式）+ <code>references/market-access.md</code>（六国准入详表）。结构一致意味着<strong>新增市场只需加一份 reference</strong>。</td>
+          </tr>
+          <tr>
+            <td><span class="repo">markwaveio/cross-border-selection-kit</span><br><span class="pill p3">未声明许可</span></td>
+            <td><strong>三源交叉验证</strong><br>+ 关键词污染自检</td>
+            <td><code>tea-market-selection</code> Skill 的核心方法论：平台榜单 / 搜索趋势 / 供应链三源口径对齐；污染阈值 0.6，命中则自动收窄关键词，最多重试 2 次后停下问人。</td>
+          </tr>
+          <tr>
+            <td><span class="repo">chnjames/tradehot-skill</span><br><span class="repo">AccioWork/agent-skills</span><br><span class="pill p3">未声明许可</span></td>
+            <td><strong>HS Code / 关税速查</strong><br>单文件 skill，装即用</td>
+            <td>落成 <code>lookup_hs_code()</code>（含 3kg 内包装分界规则）与 <code>calc_landed_cost()</code> 的 <code>duty_pct</code> 参数。这两块正好补上第一份报告里最实操、最容易出错的部分。</td>
+          </tr>
+          <tr>
+            <td><span class="repo">uni-infiniteai/clawec-agents</span><br><span class="pill p1">MIT</span></td>
+            <td><strong>Agent 调度 N 个 Skill</strong><br>分层结构</td>
+            <td>整体架构分层：<strong>数据层（JSON）→ 能力层（MCP 工具）→ 工作流层（Skill）</strong>。Skill 不直接读数据文件，而是调用 MCP 工具，保证口径单一。</td>
+          </tr>
+          <tr>
+            <td><span class="repo">MCP 官方 Python SDK</span></td>
+            <td><strong>协议标准</strong><br>stdio JSON-RPC</td>
+            <td>服务端基于官方 SDK 实现，因此<strong>不止 WorkBuddy 能用</strong> —— Claude Code、Cursor 等任何支持 MCP 的客户端都能直接接入。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="h">许可证风险的处理方式</div>
+      <p>调研报告点明：本主题下星标最高的几个中文仓库<strong>未声明任何开源许可证</strong>，按著作权法默认「保留所有权利」，直接商用有法律风险。本项目因此确立一条原则 —— <strong>只借鉴公开描述的设计模式与方法论，不复制任何代码</strong>。所有实现均为原创，无许可证依赖。需要说明的是：设计模式本身通常不受著作权保护，但<strong>如果将来要直接引用某个仓库的代码，必须先确认其许可证</strong>（MIT / CC0 可商用，未声明的需联系作者）。</p>
+    </div>
+
+    <h3>技术方案选型</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:20%">层</th><th style="width:26%">选型</th><th>为什么这么选</th></tr></thead>
+        <tbody>
+          <tr><td><strong>能力层</strong></td><td>MCP 服务端（Python）</td><td>MCP 是当前 AI 工具接入的事实标准，一次实现多端可用；相比纯 Skill，MCP 能做<strong>确定性计算</strong>（成本、费用、毛利），不依赖模型心算。</td></tr>
+          <tr><td><strong>工作流层</strong></td><td>Skill（Markdown 驱动）</td><td>判断纪律、话术、输出格式用自然语言写，<strong>改起来不需要懂工程</strong>。这与调研报告里「技术栈高度趋同、迁移成本很低」的观察一致。</td></tr>
+          <tr><td><strong>数据层</strong></td><td>4 个 JSON 文件</td><td>准入数据、费率、物流参数、HS 编码全部外置。法规和费率变动频繁，<strong>改 JSON 即可更新，不用改代码</strong>。</td></tr>
+          <tr><td><strong>验证层</strong></td><td>两层自动化测试</td><td>工具层验证业务逻辑，协议层用真实 stdio JSON-RPC 握手验证 MCP 集成 —— 后者能抓到「函数写对了但协议接不上」这类问题。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="s3">
+    <h2><span class="num">03</span>功能实现方案与集成步骤 <span class="en">IMPLEMENTATION</span></h2>
+
+    <h3>整体架构</h3>
+    <div class="chart-box">
+      <div class="ttl">三层结构：数据 → 能力 → 工作流</div>
+      <svg viewBox="0 0 940 330" width="100%" height="auto" role="img" aria-label="tea-export-kit 三层架构图">
+        <defs>
+          <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8fa89a"/>
+          </marker>
+        </defs>
+
+        <!-- 工作流层 -->
+        <rect x="20" y="18" width="900" height="82" rx="11" fill="#f0ebf8" stroke="#6b4b9a" stroke-width="1.4"/>
+        <text x="40" y="42" font-size="12.5" font-weight="700" fill="#6b4b9a" font-family="Segoe UI,sans-serif">工作流层 · SKILLS</text>
+        <rect x="40" y="52" width="272" height="36" rx="8" fill="#ffffff" stroke="#d8cfe8"/>
+        <text x="56" y="75" font-size="12.5" fill="#3c4440" font-family="Segoe UI,sans-serif">tea-export-compliance</text>
+        <rect x="330" y="52" width="272" height="36" rx="8" fill="#ffffff" stroke="#d8cfe8"/>
+        <text x="346" y="75" font-size="12.5" fill="#3c4440" font-family="Segoe UI,sans-serif">tea-market-selection</text>
+        <rect x="620" y="52" width="282" height="36" rx="8" fill="#ffffff" stroke="#d8cfe8"/>
+        <text x="636" y="75" font-size="12.5" fill="#3c4440" font-family="Segoe UI,sans-serif">tea-buyer-due-diligence</text>
+
+        <line x1="470" y1="100" x2="470" y2="122" stroke="#8fa89a" stroke-width="1.6" marker-end="url(#ar)"/>
+        <text x="482" y="117" font-size="11.5" fill="#6b7a72" font-family="Segoe UI,sans-serif">调用工具</text>
+
+        <!-- 能力层 -->
+        <rect x="20" y="126" width="900" height="112" rx="11" fill="#e8f2ec" stroke="#1f6b4a" stroke-width="1.4"/>
+        <text x="40" y="150" font-size="12.5" font-weight="700" fill="#1f6b4a" font-family="Segoe UI,sans-serif">能力层 · MCP SERVER（tea-export-mcp · 8 个工具）</text>
+        <g font-size="11.5" fill="#2b4a3a" font-family="Cascadia Code,Consolas,monospace">
+          <rect x="40" y="162" width="140" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="54" y="182">list_markets</text>
+          <rect x="190" y="162" width="216" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="204" y="182">get_market_requirements</text>
+          <rect x="416" y="162" width="150" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="430" y="182">check_mrl</text>
+          <rect x="576" y="162" width="150" height="30" rx="7" fill="#d8ece1" stroke="#1f6b4a"/>
+          <text x="590" y="182" font-weight="700">check_compliance</text>
+          <rect x="736" y="162" width="166" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="750" y="182">lookup_hs_code</text>
+
+          <rect x="40" y="200" width="160" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="54" y="220">calc_landed_cost</text>
+          <rect x="210" y="200" width="166" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="224" y="220">calc_platform_fee</text>
+          <rect x="386" y="200" width="196" height="30" rx="7" fill="#ffffff" stroke="#c9e0d4"/>
+          <text x="400" y="220">recommend_logistics</text>
+          <rect x="592" y="200" width="310" height="30" rx="7" fill="#fbf3e2" stroke="#a8761a"/>
+          <text x="606" y="220" fill="#8a6420" font-family="Segoe UI,sans-serif">所有输出强制附加：数据版本 + 日期 + 免责声明</text>
+        </g>
+
+        <line x1="470" y1="238" x2="470" y2="260" stroke="#8fa89a" stroke-width="1.6" marker-end="url(#ar)"/>
+        <text x="482" y="255" font-size="11.5" fill="#6b7a72" font-family="Segoe UI,sans-serif">读取</text>
+
+        <!-- 数据层 -->
+        <rect x="20" y="264" width="900" height="52" rx="11" fill="#e9eefb" stroke="#2f4b8f" stroke-width="1.4"/>
+        <text x="40" y="286" font-size="12.5" font-weight="700" fill="#2f4b8f" font-family="Segoe UI,sans-serif">数据层 · data/*.json（改这里即可更新，无需改代码）</text>
+        <g font-size="11.5" fill="#33456e" font-family="Cascadia Code,Consolas,monospace">
+          <text x="40" y="306">market-access.json · 6 国准入</text>
+          <text x="270" y="306">platform-fees.json · 8 平台费率</text>
+          <text x="520" y="306">logistics.json · 5 种运输</text>
+          <text x="720" y="306">hs-codes.json</text>
+        </g>
+      </svg>
+      <div class="cap">Skill 不直接读数据文件，一律通过 MCP 工具取数 —— 保证口径单一，避免同一份数据在多个地方各写一遍。</div>
+    </div>
+
+    <h3>8 个 MCP 工具</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:24%">工具</th><th style="width:30%">输入</th><th>输出</th></tr></thead>
+        <tbody>
+          <tr><td><code>list_markets</code></td><td>—</td><td>6 个已收录市场及其监管机构、默认农残限量概览</td></tr>
+          <tr><td><code>get_market_requirements</code></td><td><code>market</code>（EU/US/JP/SA/ASEAN/MA_SN）</td><td>法规依据、默认 MRL、高风险物质表、强制要求、随货文件、标签、有机认证、关税、市场机会</td></tr>
+          <tr><td><code>check_mrl</code></td><td><code>compound</code>、可选 <code>market</code></td><td>该物质在各市场的限量与应对方式；<strong>未命中时明确提示「不等于合规」</strong></td></tr>
+          <tr><td><code>check_compliance</code><br><span class="pill p1">核心</span></td><td><code>market</code>、<code>detected_compounds</code>、<code>organic_claimed</code>、<code>packaging_weight_kg</code></td><td><strong>三级结论</strong>（🚫 阻断 / ⚠️ 有风险 / ✅ 通过）+ 阻断项 + 待办 + 已确认项 + 责任不对称提醒</td></tr>
+          <tr><td><code>lookup_hs_code</code></td><td><code>keyword</code>（绿茶/红茶/小包装/3kg…）</td><td>HS 编码表 + 3kg 内包装分界规则说明</td></tr>
+          <tr><td><code>calc_landed_cost</code></td><td>货值/kg、重量、<code>mode</code>、<code>duty_pct</code>、<code>extra_per_kg_usd</code></td><td>到岸成本拆解（货值/运费区间/关税/附加费）+ 单位到岸成本 + <strong>隐性成本清单</strong></td></tr>
+          <tr><td><code>calc_platform_fee</code></td><td><code>platform</code>、售价、成本、<code>ad_pct</code></td><td>费用拆解表 + 净利 + 毛利率；亚马逊会额外提示 <strong>$15 定价断点</strong>，Temu 提示品牌风险</td></tr>
+          <tr><td><code>recommend_logistics</code></td><td><code>tea_type</code>、单价、重量、保质期</td><td>运输方式推荐 + 各方式对比表 + 包装与温控要求；短保质期会警告避开海运</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3 个 Skill</h3>
+    <div class="grid3">
+      <div class="mini">
+        <span class="tag t-green">合规</span>
+        <h4>tea-export-compliance</h4>
+        <p>三条铁律：<strong>0.01 是检测限不是安全线</strong>；<strong>蒽醌来自工艺不是农药</strong>（只能改烘干能源，改用药无效）；<strong>不合格的代价由进口商承担</strong>。含四步工作流与常见误判纠正。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-blue">选品</span>
+        <h4>tea-market-selection</h4>
+        <p>三源交叉验证（平台榜单 / 搜索趋势 / 供应链）+ 关键词污染自检（阈值 0.6）+ 六维打分。核心是<strong>避免被虚高搜索量误导</strong> —— 「tea」在英文里还指茶歇、茶色。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-gold">尽调</span>
+        <h4>tea-buyer-due-diligence</h4>
+        <p>海外买家五必查项 + 红黄绿评级。用于「这个买家靠不靠谱」「该不该接这个订单」这类判断。</p>
+      </div>
+    </div>
+
+    <h3>实际运行效果</h3>
+    <p>下面是对欧盟、检出蒽醌与啶虫脒、且宣称有机的一批茶的真实调用输出（未做任何修饰）：</p>
+    <pre><code><span class="cmt">&gt; check_compliance(market="EU", detected_compounds=["蒽醌","啶虫脒"],
+                   organic_claimed=True, packaging_weight_kg=0.05)</span>
+
+<span class="out"># 合规预检 — 欧盟
+
+## 结论：🚫 阻断
+
+### 🚫 阻断项（必须先解决）
+1. 检出 蒽醌（限量 0.02 mg/kg）— 非喷洒农药，由燃煤烘干与燃烧沉积物形成，
+   是中国茶被欧盟通报的首要原因。应对（process）：改用电力/天然气/生物质
+   等清洁能源烘干，减少烟尘接触
+2. 检出 啶虫脒（限量 0.01 mg/kg）— 中国茶园常用，欧盟未给进口容忍量。
+   应对（agronomy）：停用，改用合规替代药剂
+3. 已宣称有机 → 必须持有 EU Organic 认证。注意：中国有机证书或 USDA NOP
+   证书不能自动用于在欧盟等市场宣称有机，须由目的市场认可机构认证。
+
+### ⚠️ 风险与待办
+- 该市场默认 MRL 为 0.01 mg/kg，这是仪器检测下限而非毒理学安全值 ——
+  只要检测得到即判不合格。多残留全项扫描不是可选项。
+- 有机额外成本：有机检验费约 0.12–0.20 欧元/kg
+
+### ✅ 已确认
+- 单包净重 0.05 kg → HS 归类倾向 0902.10（绿茶）/ 0902.30（红茶·乌龙）
+- 随货文件清单：该生产批次的农残检测报告（LC-MS/MS、GC-MS/MS 多残留方法，
+  覆盖数百项）；原产地证；商业发票、装箱单、提单；有机茶：EU 认可机构的
+  认证证书 + 经 TRACES 系统提交的检验证书（COI）
+
+&gt; 责任不对称提醒：一旦不合格，滞港、销毁、退运成本由进口商承担。
+
+来源：European Commission FOOD 官方页面 · 核实日期 2026-09
+---
+数据版本 1.0.0 · 编制 2026-10-05</span></code></pre>
+
+    <p>注意几个细节：<strong>「蒽醌」的应对是「改工艺」不是「改用药」</strong>；<strong>「已宣称有机」被提升为阻断项</strong>而不是提醒；<strong>末尾强制带来源与数据版本</strong>。这些都不是模型自由发挥，是写死在规则里的。</p>
+
+    <h3>集成步骤（四步，脚本已备好）</h3>
+    <p><code>tea-export-kit/install.ps1</code>（Windows）与 <code>install.sh</code>（Unix）已写好，做四件事：</p>
+    <div class="steps">
+      <div class="step">
+        <div class="st">检查 Python 与 mcp 依赖</div>
+        <div class="sd">自动探测解释器（优先本机隔离环境），缺失 <code>mcp</code> 时按 <code>requirements.txt</code> 安装。</div>
+      </div>
+      <div class="step">
+        <div class="st">复制 3 个 Skill 到 skills 目录</div>
+        <div class="sd">默认 <code>~/.workbuddy-ai/skills</code>。装到 Claude Code 用 <code>-SkillsDir "$HOME\.claude\skills"</code>，Cursor 指向项目内 <code>.cursor\skills</code>。</div>
+      </div>
+      <div class="step">
+        <div class="st">把 MCP 服务写入 <code>~/.workbuddy-ai/mcp.json</code></div>
+        <div class="sd"><strong>合并模式</strong> —— 只新增 <code>tea-export</code> 一项，不动你已有的其他 server。写入内容：<code>command</code> = Python 路径，<code>args</code> = <code>[server.py 绝对路径]</code>。</div>
+      </div>
+      <div class="step">
+        <div class="st">运行验证</div>
+        <div class="sd">自动跑 <code>tests/verify.py</code>，21 项断言。任一项失败脚本会以非零码退出并提示。</div>
+      </div>
+    </div>
+
+    <pre><code><span class="cmt"># Windows</span>
+powershell -ExecutionPolicy Bypass -File install.ps1
+
+<span class="cmt"># 只装 Skill、不写 MCP 配置</span>
+powershell -ExecutionPolicy Bypass -File install.ps1 -SkipMcpConfig
+
+<span class="cmt"># 装到 Claude Code</span>
+powershell -ExecutionPolicy Bypass -File install.ps1 -SkillsDir "$HOME\.claude\skills"</code></pre>
+
+    <div class="callout c-note">
+      <div class="h">安装脚本的一个设计取舍</div>
+      <p>脚本<strong>不会自动激活 MCP</strong>。写配置和信任是两回事 —— 出于安全考虑，WorkBuddy 要求用户对新增的 MCP 服务手动点一次「信任」。脚本能做的是把配置写好、把验证跑完，<strong>最后一步留给你</strong>。</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="s4">
+    <h2><span class="num">04</span>依赖、配置与验证 <span class="en">DEPENDENCIES &amp; VERIFY</span></h2>
+
+    <h3>依赖清单</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">依赖</th><th style="width:20%">版本要求</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Python</strong></td><td>≥ 3.10</td><td>代码用到 <code>list[str] | None</code> 这类新式类型标注。本机环境为 3.13。</td></tr>
+          <tr><td><code>mcp</code></td><td>≥ 2.3.0</td><td>MCP 官方 Python SDK。随附 <code>pydantic</code>、<code>anyio</code> 等传递依赖。</td></tr>
+          <tr><td>标准库</td><td>—</td><td>其余全部使用标准库（<code>json</code> / <code>pathlib</code> / <code>subprocess</code>），<strong>零额外依赖</strong>。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="h">一个容易踩的坑：mcp 2.x 的 API 变更</div>
+      <p>如果你在网上看到的示例是 <code>from mcp.server.fastmcp import FastMCP</code>，在 <strong>mcp 2.x 上会直接报 <code>ModuleNotFoundError</code></strong>。v2.x 里 FastMCP 已更名为 <code>MCPServer</code>，正确写法是 <code>from mcp.server.mcpserver import MCPServer</code>。本项目已按新 API 实现，装的时候不用改。</p>
+    </div>
+
+    <h3>配置要点</h3>
+    <h4>① MCP 配置项</h4>
+    <p>写入 <code>~/.workbuddy-ai/mcp.json</code> 的内容（脚本自动完成）：</p>
+    <pre><code>{
+  "mcpServers": {
+    "tea-export": {
+      "command": "&lt;Python 解释器绝对路径&gt;",
+      "args": ["&lt;kit 根目录&gt;/mcp/tea-export-mcp/server.py"]
+    }
+  }
+}</code></pre>
+
+    <h4>② 数据目录的相对位置不能动</h4>
+    <p>服务端用 <code>DATA_DIR = Path(__file__).resolve().parents[2] / "data"</code> 定位数据。也就是说 <code>server.py</code> 必须待在 <code>mcp/tea-export-mcp/</code> 下，<code>data/</code> 在 kit 根目录。<strong>整个 kit 目录要一起移动，不能只挪 server.py</strong>。</p>
+
+    <h4>③ 更新数据的方式</h4>
+    <p>法规或费率变了，直接改对应的 <code>data/*.json</code>，把 <code>_meta.version</code> 升一位、<code>compiled</code> 改成当天日期，重启服务即可。<strong>不用碰 Python 代码</strong>。</p>
+
+    <h4>④ 新增目的国市场</h4>
+    <p>在 <code>data/market-access.json</code> 的 <code>markets</code> 下加一个键（如 <code>KR</code>），按现有结构填 <code>name_zh</code> / <code>regulator</code> / <code>default_mrl_mg_kg</code> / <code>high_risk_compounds</code> / <code>documents</code> / <code>labeling</code> 等字段。所有工具会自动识别新市场。</p>
+
+    <h3>验证方式</h3>
+    <p>两层验证，共 <strong>21 项断言</strong>，当前<strong>全部通过</strong>。</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:18%">层</th><th style="width:26%">验证什么</th><th>断言数</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>L1 · 工具层</strong></td>
+            <td>业务逻辑正确性：MRL 取值、三级结论判定、HS 分界、平台费率计算、物流推荐</td>
+            <td>16 项</td>
+          </tr>
+          <tr>
+            <td><strong>L2 · 协议层</strong></td>
+            <td><strong>真实 MCP stdio JSON-RPC 握手</strong>：<code>initialize</code> / <code>tools/list</code> / <code>tools/call</code>，以及缺参数时服务不崩溃</td>
+            <td>5 项</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>L2 是关键 —— 它<strong>真的把服务端当子进程启动，按 MCP 协议发 JSON-RPC 请求</strong>，能抓到「函数本身写对了但协议接不上」这类只在集成时才会暴露的问题。</p>
+
+    <h4>怎么跑</h4>
+    <pre><code><span class="cmt"># 完整验证（21 项）</span>
+python tests/verify.py
+
+<span class="cmt"># 只跑服务端自检（11 项，更快）</span>
+python mcp/tea-export-mcp/server.py --selftest</code></pre>
+
+    <h4>当前实际结果</h4>
+    <pre><code><span class="out">=== L1 · 工具层 ===
+  [PASS] list_markets 覆盖 6 个市场
+  [PASS] EU 默认 MRL = 0.01
+  [PASS] EU 蒽醌限量 = 0.02
+  [PASS] 检出蒽醌 → 判定阻断
+  [PASS] 宣称有机 → 追加认证阻断项
+  [PASS] 未提供检测 → 不误判通过
+  [PASS] 未知物质 → 提示查官方库
+  [PASS] 未知市场 → 列出可选值
+  [PASS] HS 3kg 分界生效
+  [PASS] 亚马逊 $15 断点提示
+  [PASS] 亚马逊 ≤$15 按 8% 计佣
+  [PASS] 亚马逊 &gt;$15 按 15% 计佣
+  [PASS] Temu 提示伤品牌风险
+  [PASS] 绿茶高货值 → 推荐空运
+  [PASS] 短保质期 → 警告避开海运
+  [PASS] 每条输出带数据版本
+
+=== L2 · MCP 协议层（stdio JSON-RPC）===
+  [PASS] initialize 握手  — server=tea-export-mcp proto=2025-06-18
+  [PASS] tools/list 返回工具清单  — 共 8 个工具
+  [PASS] 工具名与设计一致  — 缺失: 无
+  [PASS] tools/call 调用 check_compliance  — 返回 698 字符
+  [PASS] 缺参数时优雅报错  — 服务未崩溃
+
+==========================================================
+  结果：21/21 通过
+==========================================================</span></code></pre>
+
+    <div class="callout c-verdict">
+      <div class="h">验证覆盖了什么、没覆盖什么</div>
+      <p><strong>覆盖了</strong>：工具逻辑正确性、MCP 协议连通性、异常输入不崩溃、输出必带溯源信息。<br>
+      <strong>没覆盖</strong>：数据本身的准确性（那是人工核实的活，靠 <code>source</code> + <code>as_of</code> 字段追踪）、真实报关环境下的端到端表现。<strong>验证通过 ≠ 数据永远正确</strong> —— 法规会变，所以每条输出都强制带日期。</p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section id="s5">
+    <h2><span class="num">05</span>你还需要做的唯一一步 <span class="en">YOUR ACTION</span></h2>
+
+    <div class="callout c-warn">
+      <div class="h">MCP 需要你手动点一次「信任」</div>
+      <p>工具已经装好、配置已写入、验证已通过。但出于安全设计，<strong>WorkBuddy 不会自动激活新写入的 MCP 服务</strong>。需要你操作一次：</p>
+      <ol>
+        <li>打开 WorkBuddy 的<strong>连接器管理页</strong></li>
+        <li>在<strong>右上角「自定义连接器」</strong>入口里找到 <code>tea-export</code></li>
+        <li>点击 <strong>「信任」</strong></li>
+      </ol>
+      <p>完成后，我这边就能直接调用这 8 个工具帮你查合规、算成本了。</p>
+    </div>
+
+    <h3>交付清单</h3>
+    <ul class="check">
+      <li class="ok">数据层：4 个 JSON（6 国准入 / 8 平台费率 / 5 种运输 / HS 编码）</li>
+      <li class="ok">能力层：MCP 服务端 + 8 个工具</li>
+      <li class="ok">工作流层：3 个 Skill（合规预检 / 选品 / 买家背调）</li>
+      <li class="ok">验证层：两层测试，21 项断言全通过</li>
+      <li class="ok">安装脚本：Windows <code>install.ps1</code> + Unix <code>install.sh</code></li>
+      <li>待你操作：在连接器管理页点击「信任」激活 MCP</li>
+    </ul>
+
+    <h3>后续可以做的</h3>
+    <ul>
+      <li><strong>扩市场</strong>：按第 04 节的字段结构，往 <code>market-access.json</code> 里加韩国、俄罗斯、澳洲等市场。</li>
+      <li><strong>接实价</strong>：<code>logistics.json</code> 目前用的是区间估价。如果有货代的实时报价，替换后测算精度会明显提升。</li>
+      <li><strong>接平台数据</strong>：调研报告里提到的 Sorftime / 卖家精灵等 MCP，可接到 <code>tea-market-selection</code> 的三源验证里，把「平台信号」这一源自动化。</li>
+      <li><strong>推送代码</strong>：kit 目前在本机。如果需要，可以推到 GitHub 仓库（注意：内含费率与法规数据，建议用私有仓库）。</li>
+    </ul>
+
+    <div class="callout c-indigo">
+      <div class="h">一句话收尾</div>
+      <p>前三份报告回答的是「<strong>能不能做、怎么做、有没有工具</strong>」。这份文档补上最后一块：<strong>工具做出来了，能跑，验证过了</strong>。剩下就是你点一次「信任」，然后开始用它干活。</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>数据来源</b>：European Commission FOOD 官方页面（Regulation (EC) No 396/2005、EU Pesticides Database） · 美国 FDA / USTR · 日本厚生劳动省肯定列表制度 · 沙特 SFDA · 各电商平台官方费率页 · GitHub API（调研阶段）</p>
+    <p style="margin-top:10px"><b>技术栈</b>：Python 3.13 · mcp SDK 2.3.0 · MCP stdio JSON-RPC · Markdown Skill</p>
+    <p style="margin-top:10px">编制：<b>02</b> · 2026-10-05 · 验证状态 <b>21/21 通过</b></p>
+  </footer>
+
+</div>
+
+<div class="page-pager">
+  <a href="skill-landscape.html"><div class="lbl">← 上一份</div><div class="ttl">跨境电商 Skill / MCP 开源项目调研</div><div class="sub">有没有现成工具能提效？哪些能用？</div></a>
+  <a href="../index.html"><div class="lbl">返回</div><div class="ttl">资料包首页</div><div class="sub">四份文档总览</div></a>
+</div>
+
+</body>
+</html>
