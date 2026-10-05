@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>茶叶出海 · 决策资料包</title>
+<meta name="description" content="广东茶叶货源出口海外市场的完整决策资料包：可行性分析、零售运营指南、工具生态调研。">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  :root{
+    --ink:#1b1e1c; --ink-2:#3c4440; --muted:#6b7a72; --faint:#98a49d;
+    --bg:#f8f7f4; --card:#ffffff; --line:#e4e1d8; --line-2:#efece4;
+    --green:#1f6b4a; --green-2:#2f8f63; --green-3:#e8f2ec;
+    --gold:#a8761a; --gold-bg:#fbf3e2;
+    --purple:#6b4b9a; --purple-bg:#f0ebf8;
+    --indigo:#2f4b8f; --indigo-bg:#e9eefb;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    font-size:15.5px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1020px; margin:0 auto; padding:0 24px 80px;}
+
+  /* Hero */
+  .hero{
+    background:
+      radial-gradient(900px 400px at 12% -10%, rgba(47,143,99,.55), transparent 62%),
+      radial-gradient(700px 380px at 88% 0%, rgba(107,75,154,.45), transparent 60%),
+      linear-gradient(140deg,#0f1a16 0%,#16281f 48%,#1b2a3a 100%);
+    color:#fff; padding:64px 24px 58px; position:relative; overflow:hidden;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:26px 26px; opacity:.5; pointer-events:none;
+  }
+  .hero-in{max-width:1020px; margin:0 auto; position:relative; z-index:1;}
+  .hero .kicker{
+    font-size:12.5px; letter-spacing:.24em; text-transform:uppercase;
+    color:#8fd8b0; font-weight:700; margin-bottom:16px;
+  }
+  .hero h1{
+    font-size:42px; line-height:1.2; margin:0 0 16px; font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(100deg,#7fd6a8,#b9a6e8);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub{
+    font-size:16.5px; color:#cdd9d3; margin:0 0 28px; max-width:700px; line-height:1.75;
+  }
+  .hero .chips{display:flex; flex-wrap:wrap; gap:9px; margin-bottom:26px;}
+  .hero .chips span{
+    font-size:12.5px; padding:5px 12px; border-radius:20px;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.16);
+    color:#dceee3;
+  }
+  .hero .meta{
+    display:flex; flex-wrap:wrap; gap:10px 28px; font-size:13px;
+    color:#a9bdb3; border-top:1px solid rgba(255,255,255,.15); padding-top:20px;
+  }
+  .hero .meta b{color:#fff; font-weight:600;}
+
+  /* Metrics */
+  .metrics{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    margin:-30px auto 48px; overflow:hidden;
+    box-shadow:0 14px 36px rgba(16,30,24,.12); position:relative; z-index:3;
+  }
+  .metric{padding:20px 20px 18px; border-right:1px solid var(--line-2);}
+  .metric:last-child{border-right:none;}
+  .metric .v{font-size:23px; font-weight:700; color:var(--green); letter-spacing:-.02em; line-height:1.2;}
+  .metric .v small{font-size:12.5px; color:var(--muted); font-weight:600;}
+  .metric .l{font-size:12.3px; color:var(--muted); margin-top:6px; line-height:1.5;}
+
+  /* Section head */
+  .sec-head{margin:0 0 6px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .sec-head h2{font-size:23px; margin:0; font-weight:700; letter-spacing:-.01em;}
+  .sec-head .en{font-size:12px; color:var(--faint); letter-spacing:.06em; font-weight:500;}
+  .sec-desc{color:var(--muted); font-size:14.5px; margin:6px 0 24px; max-width:760px;}
+
+  /* Report cards */
+  .cards{display:grid; gap:16px;}
+  .rc{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:24px 26px; position:relative; overflow:hidden;
+    transition:border-color .18s, box-shadow .18s, transform .18s;
+  }
+  .rc::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+  }
+  .rc.r1::before{background:linear-gradient(180deg,#2f8f63,#1f6b4a);}
+  .rc.r2::before{background:linear-gradient(180deg,#8a6cc4,#6b4b9a);}
+  .rc.r3::before{background:linear-gradient(180deg,#5a76c4,#2f4b8f);}
+  .rc:hover{border-color:#c4d0c8; box-shadow:0 12px 30px rgba(20,40,30,.09); transform:translateY(-2px);}
+  .rc .top{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;}
+  .rc .idx{
+    font-size:12px; font-weight:700; letter-spacing:.1em;
+    padding:3px 10px; border-radius:6px; color:#fff;
+  }
+  .rc.r1 .idx{background:#1f6b4a;}
+  .rc.r2 .idx{background:#6b4b9a;}
+  .rc.r3 .idx{background:#2f4b8f;}
+  .rc h3{font-size:20px; margin:0; font-weight:700; letter-spacing:-.01em;}
+  .rc .q{font-size:14px; color:var(--green); font-weight:600; margin:2px 0 10px;}
+  .rc.r2 .q{color:var(--purple);}
+  .rc.r3 .q{color:var(--indigo);}
+  .rc p{font-size:14.3px; color:var(--ink-2); margin:0 0 14px;}
+  .rc .tags{display:flex; flex-wrap:wrap; gap:7px;}
+  .rc .tags span{
+    font-size:12px; padding:3px 10px; border-radius:16px;
+    background:#f2f4f2; color:#5f6b63; border:1px solid #e8ebe8;
+  }
+  .rc .go{
+    position:absolute; right:24px; top:26px; font-size:13px;
+    color:var(--faint); font-weight:600;
+  }
+  .rc:hover .go{color:var(--green);}
+
+  /* How to read */
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:18px;}
+  .mini{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .mini .n{
+    width:26px; height:26px; border-radius:50%; background:var(--green-3);
+    color:var(--green); font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+  }
+  .mini h4{margin:0 0 6px; font-size:14.5px; font-weight:700;}
+  .mini p{font-size:13.6px; color:var(--ink-2); margin:0;}
+
+  /* Notice */
+  .notice{
+    background:var(--gold-bg); border-left:4px solid var(--gold);
+    border-radius:11px; padding:16px 20px; margin-top:26px; font-size:14px; color:#5c4a1e;
+  }
+  .notice b{color:#8a6420;}
+
+  footer.site-foot{
+    margin-top:56px; padding-top:24px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--muted); line-height:1.85;
+  }
+  footer.site-foot b{color:var(--ink-2);}
+
+  @media (max-width:860px){
+    .metrics{grid-template-columns:1fr 1fr;}
+    .metric:nth-child(2){border-right:none;}
+    .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--line-2);}
+    .grid3{grid-template-columns:1fr;}
+    .hero h1{font-size:31px;}
+    .hero{padding:48px 20px 46px;}
+    body{font-size:15px;}
+    .rc .go{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-in">
+    <a class="brand" href="index.html"><span class="dot"></span>茶叶出海 · 决策资料包</a>
+    <div class="links">
+      <a href="index.html" class="active">首页</a>
+      <a href="reports/feasibility.html">可行性分析</a>
+      <a href="reports/dtc-playbook.html">零售运营</a>
+      <a href="reports/skill-landscape.html">工具调研</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="kicker">Tea Export · Decision Package</div>
+    <h1>广东茶叶货源<br><em>出海决策资料包</em></h1>
+    <p class="sub">从货源优势到海外订单的完整论证：目标市场分层、准入合规、物流、定价、渠道、结算与风险。三份报告，一条从「能不能做」到「怎么做」的完整链路。</p>
+    <div class="chips">
+      <span>目标市场分层</span>
+      <span>准入与认证</span>
+      <span>物流与定价</span>
+      <span>电商平台费率</span>
+      <span>风险与应对</span>
+      <span>工具生态调研</span>
+    </div>
+    <div class="meta">
+      <span>编制 <b>02</b></span>
+      <span>日期 <b>2026-10-05</b></span>
+      <span>数据基准 <b>2025 年度海关统计</b></span>
+      <span>费率核实 <b>2026 年 8–9 月</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="v">41.88 <small>万吨</small></div>
+      <div class="l">2025 中国茶叶出口量<br>同比 +11.9%</div>
+    </div>
+    <div class="metric">
+      <div class="v">3.0<small>×</small></div>
+      <div class="l">美国有机茶均价<br>vs 普通茶（10.9–12.8 美元/kg）</div>
+    </div>
+    <div class="metric">
+      <div class="v">0.01 <small>mg/kg</small></div>
+      <div class="l">欧盟默认农残限量<br>即仪器检测下限</div>
+    </div>
+    <div class="metric">
+      <div class="v">138 <small>国</small></div>
+      <div class="l">中国茶叶出口目的地<br>前 20 国占总量 82.66%</div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <h2>三份报告</h2><span class="en">THE REPORTS</span>
+  </div>
+  <p class="sec-desc">按阅读顺序排列。建议从第一份开始，它决定了后两份的取舍方向。</p>
+
+  <div class="cards">
+
+    <a class="rc r1" href="reports/feasibility.html">
+      <div class="go">阅读 →</div>
+      <div class="top">
+        <span class="idx">01</span>
+        <h3>茶叶出海可行性分析</h3>
+      </div>
+      <div class="q">能不能做？该打哪一层市场？</div>
+      <p>整体可行性判断与市场分层：西非/俄罗斯现金流基本盘、美国/欧盟利润市场、东南亚/中东新兴增量。含五国准入与认证对照（欧盟 396/2005 默认 MRL 0.01、美国 FSVP 与 301 关税、日本肯定列表）、海运空运成本对比、三条路线的毛利模型、渠道对比、风险登记表与 90 天启动路线图。</p>
+      <div class="tags">
+        <span>市场分层</span><span>准入认证</span><span>物流成本</span><span>定价模型</span><span>风险应对</span><span>90 天路线图</span>
+      </div>
+    </a>
+
+    <a class="rc r2" href="reports/dtc-playbook.html">
+      <div class="go">阅读 →</div>
+      <div class="top">
+        <span class="idx">02</span>
+        <h3>小批量成品茶出海 · 平台与运营指南</h3>
+      </div>
+      <div class="q">一包一包卖，走哪个平台？</div>
+      <p>面向零售场景的平台选择与运营方案：Etsy / 亚马逊 / TikTok Shop / Temu / Shopify / Shopee / Lazada / 日本乐天的入驻条件与费用逐项对照；包装规格设计、物流配送、储存保质期管理、四国标签要求、各平台定价反推公式、目标客户画像与推广方式排序，附 15 周落地路线图与启动预算。</p>
+      <div class="tags">
+        <span>平台费率对照</span><span>包装规格</span><span>保质期管理</span><span>标签合规</span><span>定价反推</span><span>推广方式</span>
+      </div>
+    </a>
+
+    <a class="rc r3" href="reports/skill-landscape.html">
+      <div class="go">阅读 →</div>
+      <div class="top">
+        <span class="idx">03</span>
+        <h3>跨境电商 Skill / MCP 开源项目调研</h3>
+      </div>
+      <div class="q">有没有现成工具能提效？哪些能用？</div>
+      <p>GitHub 生态调研：20 组关键词检索、100+ 仓库筛选，详列 20 个核心项目的功能、技术栈与许可证，深度点评 8 个。给出「业务环节 → 可用仓库」的映射表、许可证风险清单（头部项目多未声明许可，商用需谨慎），以及生态空白点分析。</p>
+      <div class="tags">
+        <span>开源生态</span><span>Skill / MCP</span><span>许可证风险</span><span>环节映射</span><span>落地建议</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="sec-head" style="margin-top:52px">
+    <h2>怎么读这份资料</h2><span class="en">HOW TO READ</span>
+  </div>
+  <p class="sec-desc">三份报告是递进关系，不是并列选项。</p>
+
+  <div class="grid3">
+    <div class="mini">
+      <div class="n">1</div>
+      <h4>先看结论，再看论证</h4>
+      <p>每份报告的「结论先行」章节是给决策用的。后面各章是支撑材料，按需查阅，不必顺序读完。</p>
+    </div>
+    <div class="mini">
+      <div class="n">2</div>
+      <h4>数据都标了来源与日期</h4>
+      <p>关键数字均注明出处与核实日期。平台费率与法规变动频繁，签约或上架前请按报告指出的官方渠道复核。</p>
+    </div>
+    <div class="mini">
+      <div class="n">3</div>
+      <h4>报告是决策参考，不是法律意见</h4>
+      <p>涉及关税、认证、税务、食品合规的具体操作，请以官方文件与专业机构意见为准。</p>
+    </div>
+  </div>
+
+  <div class="notice">
+    <b>说明：</b>本资料包基于公开信息与海关统计数据编制，用于市场可行性论证与内部决策参考，不构成法律、税务或投资意见。所有法规与费率请以官方最新发布为准。
+  </div>
+
+  <footer class="site-foot">
+    <p><b>数据来源</b>：中国海关总署 · 农业农村部《中国茶叶进出口贸易分析报告（2026）》 · 欧盟委员会 FOOD 官方页面（Regulation (EC) No 396/2005、EU Pesticides Database） · 美国 FDA / USTR · 日本厚生劳动省肯定列表制度 · 各电商平台官方费率页 · GitHub API</p>
+    <p style="margin-top:10px">编制：<b>02</b> · 2026-10-05</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+/* ============================================================
+   茶叶出海 · 决策资料包 — 站点共享样式
+   仅包含跨页面共用的导航 / 页脚 / 打印规则
+   各报告页自身的样式仍保留在各自 <style> 中
+   ============================================================ */
+
+.site-nav{
+  position:sticky; top:0; z-index:9999;
+  background:rgba(16,21,28,.95);
+  -webkit-backdrop-filter:saturate(160%) blur(10px);
+  backdrop-filter:saturate(160%) blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.09);
+  font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+}
+.site-nav-in{
+  max-width:1020px; margin:0 auto; padding:0 24px;
+  display:flex; align-items:center; gap:20px; height:56px;
+}
+.site-nav .brand{
+  color:#fff; font-weight:700; font-size:14.5px; text-decoration:none;
+  white-space:nowrap; letter-spacing:.01em; display:flex; align-items:center; gap:8px;
+}
+.site-nav .brand .dot{
+  width:9px; height:9px; border-radius:50%;
+  background:linear-gradient(135deg,#2f8f63,#7fd6a8); flex:none;
+}
+.site-nav .links{display:flex; gap:4px; margin-left:auto; flex-wrap:wrap;}
+.site-nav .links a{
+  color:#b6c2ce; font-size:13.5px; text-decoration:none;
+  padding:6px 12px; border-radius:7px; white-space:nowrap;
+  transition:background .15s, color .15s;
+}
+.site-nav .links a:hover{color:#fff; background:rgba(255,255,255,.09);}
+.site-nav .links a.active{color:#fff; background:rgba(255,255,255,.15); font-weight:600;}
+
+/* 页内底部翻页器 */
+.page-pager{
+  max-width:1020px; margin:56px auto 0; padding:22px 24px 0;
+  border-top:1px solid #e4e1d8;
+  display:flex; gap:14px; flex-wrap:wrap;
+  font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+}
+.page-pager a{
+  flex:1 1 240px; text-decoration:none; color:#3c4440;
+  background:#fff; border:1px solid #e4e1d8; border-radius:11px;
+  padding:15px 18px; transition:border-color .15s, box-shadow .15s, transform .15s;
+}
+.page-pager a:hover{border-color:#b9c8bf; box-shadow:0 6px 18px rgba(20,40,30,.07); transform:translateY(-1px);}
+.page-pager .lbl{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#98a49d; font-weight:600;}
+.page-pager .ttl{font-size:15px; font-weight:700; margin-top:5px; color:#1b1e1c;}
+.page-pager .sub{font-size:12.5px; color:#6b7a72; margin-top:3px;}
+
+/* 打印：去掉导航与翻页 */
+@media print{
+  .site-nav,.page-pager{display:none !important;}
+}
+
+@media (max-width:700px){
+  .site-nav-in{height:auto; padding:10px 16px; flex-direction:column; align-items:flex-start; gap:8px;}
+  .site-nav .links{margin-left:0; width:100%;}
+  .site-nav .links a{padding:5px 9px; font-size:13px;}
+}

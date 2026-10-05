@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跨境电商 Skill / MCP 开源项目调研报告</title>
+<style>
+  :root{
+    --ink:#1b1e1c; --ink-2:#3c4440; --muted:#6b7a72; --faint:#98a49d;
+    --bg:#f8f7f4; --card:#ffffff; --line:#e4e1d8; --line-2:#efece4;
+    --green:#1f6b4a; --green-3:#e8f2ec;
+    --gold:#a8761a; --gold-bg:#fbf3e2;
+    --red:#b5342a; --red-bg:#fbecea;
+    --blue:#2563a8; --blue-bg:#eaf1f9;
+    --purple:#6b4b9a; --purple-bg:#f0ebf8;
+    --indigo:#2f4b8f; --indigo-bg:#e9eefb; --indigo-2:#4560a8;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    font-size:15.5px; line-height:1.75; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 24px 100px;}
+
+  header.hero{background:linear-gradient(140deg,#141c33 0%,#243a6b 52%,#3d5aa0 100%); color:#fff; padding:54px 24px 46px;}
+  .hero-in{max-width:1020px; margin:0 auto; padding:0 24px;}
+  .hero .kicker{font-size:12.5px; letter-spacing:.22em; text-transform:uppercase; color:#a9bce8; font-weight:600; margin-bottom:14px;}
+  .hero h1{font-size:35px; line-height:1.25; margin:0 0 14px; font-weight:700; letter-spacing:-.01em;}
+  .hero p.sub{font-size:16px; color:#d3dcf2; margin:0 0 26px; max-width:760px;}
+  .hero .meta{display:flex; flex-wrap:wrap; gap:10px 26px; font-size:13px; color:#b3c1e4; border-top:1px solid rgba(255,255,255,.18); padding-top:18px;}
+  .hero .meta b{color:#fff; font-weight:600;}
+
+  .metrics{display:grid; grid-template-columns:repeat(4,1fr); background:var(--card); border:1px solid var(--line); border-radius:14px; margin:-26px auto 40px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.12); position:relative; z-index:2;}
+  .metric{padding:20px 20px 18px; border-right:1px solid var(--line-2);}
+  .metric:last-child{border-right:none;}
+  .metric .v{font-size:24px; font-weight:700; color:var(--indigo); letter-spacing:-.02em; line-height:1.2;}
+  .metric .v small{font-size:13px; color:var(--muted); font-weight:600;}
+  .metric .l{font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.5;}
+
+  section{margin:44px 0 0;}
+  h2{font-size:23px; margin:0 0 6px; padding-top:8px; font-weight:700; letter-spacing:-.01em; display:flex; align-items:baseline; gap:12px;}
+  h2 .num{font-size:13px; color:#fff; background:var(--indigo); border-radius:7px; padding:3px 9px; font-weight:700; flex:none; transform:translateY(-3px);}
+  h2 .en{font-size:12px; color:var(--faint); font-weight:500; letter-spacing:.06em;}
+  h3{font-size:17px; margin:30px 0 10px; font-weight:700; padding-left:12px; border-left:3px solid var(--indigo-2);}
+  h4{font-size:15px; margin:20px 0 8px; font-weight:700; color:var(--ink-2);}
+  p{margin:10px 0; color:var(--ink-2);}
+  ul,ol{margin:10px 0; padding-left:22px; color:var(--ink-2);}
+  li{margin:5px 0;}
+  strong{color:var(--ink); font-weight:700;}
+  code{background:#eef1f8; border:1px solid #dde3f0; border-radius:4px; padding:1px 6px; font-size:12.8px; font-family:"Cascadia Code",Consolas,monospace; color:var(--indigo);}
+  a{color:var(--indigo); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:18px 0;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .mini{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .mini h4{margin:0 0 8px; font-size:15px;}
+  .mini p{font-size:14px; margin:6px 0 0;}
+  .mini .tag{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:20px; margin-bottom:9px; letter-spacing:.03em;}
+  .t-green{background:var(--green-3); color:var(--green);}
+  .t-blue{background:var(--blue-bg); color:var(--blue);}
+  .t-gold{background:var(--gold-bg); color:var(--gold);}
+  .t-red{background:var(--red-bg); color:var(--red);}
+  .t-indigo{background:var(--indigo-bg); color:var(--indigo);}
+  .t-purple{background:var(--purple-bg); color:var(--purple);}
+
+  .callout{border-radius:11px; padding:16px 20px 16px 18px; margin:18px 0; border-left:4px solid; font-size:14.5px;}
+  .callout p{margin:6px 0;}
+  .callout .h{font-weight:700; margin-bottom:4px; font-size:14.5px;}
+  .c-verdict{background:var(--green-3); border-color:var(--green);}
+  .c-verdict .h{color:var(--green);}
+  .c-warn{background:var(--red-bg); border-color:var(--red);}
+  .c-warn .h{color:var(--red);}
+  .c-note{background:var(--gold-bg); border-color:var(--gold);}
+  .c-note .h{color:var(--gold);}
+  .c-info{background:var(--blue-bg); border-color:var(--blue);}
+  .c-info .h{color:var(--blue);}
+  .c-indigo{background:var(--indigo-bg); border-color:var(--indigo);}
+  .c-indigo .h{color:var(--indigo);}
+
+  .tbl-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:var(--card);}
+  table{border-collapse:collapse; width:100%; font-size:13.4px; min-width:720px;}
+  thead th{background:#f0f3f9; color:var(--ink); text-align:left; font-weight:700; padding:12px 14px; border-bottom:1.5px solid var(--line); white-space:nowrap; font-size:12.8px;}
+  tbody td{padding:11px 14px; border-bottom:1px solid var(--line-2); vertical-align:top; color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#f9fafd;}
+  td strong{color:var(--ink);}
+  .pill{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:20px; white-space:nowrap;}
+  .p1{background:var(--green-3); color:var(--green);}
+  .p2{background:var(--blue-bg); color:var(--blue);}
+  .p3{background:var(--gold-bg); color:var(--gold);}
+  .p4{background:var(--red-bg); color:var(--red);}
+  .repo{font-family:"Cascadia Code",Consolas,monospace; font-size:12.5px; color:var(--indigo); font-weight:600; word-break:break-all;}
+  .num-cell{font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+  /* repo cards */
+  .rcard{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:14px 0; border-left:4px solid var(--indigo-2);}
+  .rcard .head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:6px;}
+  .rcard .nm{font-family:"Cascadia Code",Consolas,monospace; font-size:14.5px; font-weight:700; color:var(--indigo);}
+  .rcard .st{font-size:12.5px; color:var(--muted); font-weight:600;}
+  .rcard .desc{font-size:14px; color:var(--ink-2); margin:8px 0;}
+  .rcard .row{font-size:13.3px; margin:5px 0; color:var(--ink-2);}
+  .rcard .row b{color:var(--ink); font-weight:700;}
+  .rcard .borrow{background:var(--indigo-bg); border-radius:8px; padding:9px 13px; margin-top:11px; font-size:13.5px; color:#243a6b;}
+  .rcard .borrow b{color:var(--indigo);}
+
+  .chart-box{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:18px 0;}
+  .chart-box .cap{font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.6;}
+  .chart-box .ttl{font-size:14.5px; font-weight:700; margin-bottom:16px; color:var(--ink);}
+
+  .steps{counter-reset:s; margin:18px 0;}
+  .step{position:relative; padding:16px 20px 16px 62px; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px;}
+  .step::before{counter-increment:s; content:counter(s); position:absolute; left:18px; top:16px; width:30px; height:30px; background:var(--indigo); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .step .st{font-weight:700; font-size:15px; margin-bottom:4px;}
+  .step .sd{font-size:14px; color:var(--ink-2);}
+
+  .check{list-style:none; padding-left:0;}
+  .check li{padding-left:26px; position:relative; margin:7px 0; font-size:14.5px;}
+  .check li::before{content:"☐"; position:absolute; left:0; top:0; color:var(--indigo); font-size:15px; font-weight:700;}
+
+  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); line-height:1.8;}
+  footer b{color:var(--ink-2);}
+
+  @media (max-width:820px){
+    .metrics{grid-template-columns:1fr 1fr;}
+    .metric:nth-child(2){border-right:none;}
+    .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--line-2);}
+    .grid2,.grid3{grid-template-columns:1fr;}
+    .hero h1{font-size:27px;}
+    body{font-size:15px;}
+  }
+</style>
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-in">
+    <a class="brand" href="../index.html"><span class="dot"></span>茶叶出海 · 决策资料包</a>
+    <div class="links">
+      <a href="../index.html">首页</a>
+      <a href="feasibility.html">可行性分析</a>
+      <a href="dtc-playbook.html">零售运营</a>
+      <a href="skill-landscape.html" class="active">工具调研</a>
+
+    </div>
+  </div>
+</nav>
+
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="kicker">GitHub Landscape Research</div>
+    <h1>跨境电商 Skill / MCP<br>开源项目调研报告</h1>
+    <p class="sub">在 GitHub 上系统检索与跨境电商相关的「技能（Skill）/ 工具能力（MCP）」类开源项目，整理其功能、技术栈与适用场景，并评估哪些值得借鉴、对你的茶叶出海项目有何参考价值。</p>
+    <div class="meta">
+      <span>编制 <b>02</b></span>
+      <span>检索日期 <b>2026-10-05</b></span>
+      <span>检索方式 <b>GitHub API（gh CLI）</b></span>
+      <span>样本 <b>20 组关键词 / 100+ 仓库</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="v">100<small>+</small></div>
+      <div class="l">检索命中的相关仓库<br>筛出 40 个高相关</div>
+    </div>
+    <div class="metric">
+      <div class="v">1302 <small>⭐</small></div>
+      <div class="l">本主题最高星仓库<br>ecom-details-image</div>
+    </div>
+    <div class="metric">
+      <div class="v">58 <small>个 skill</small></div>
+      <div class="l">最完整的跨境 skill 库<br>cross-border-ecommerce-skills</div>
+    </div>
+    <div class="metric">
+      <div class="v">≥40<small>%</small></div>
+      <div class="l">高相关仓库<strong>未声明许可证</strong><br>商业复用有法律风险</div>
+    </div>
+  </div>
+
+  <!-- 0 -->
+  <section id="s0">
+    <h2><span class="num">00</span>结论先行 <span class="en">EXECUTIVE SUMMARY</span></h2>
+
+    <div class="callout c-verdict">
+      <div class="h">一句话结论</div>
+      <p>这个赛道在 2026 年已经相当成熟，但<strong>「跨境 + AI Skill」生态几乎全部围绕亚马逊运营构建</strong>，专门服务「茶叶 / 食品出口」的 skill 是<strong>空白</strong>。这既是缺口，也是你的机会 —— 与其从零造，不如<strong>站在这些仓库的肩膀上，只补自己缺的那两块：食品合规与海外买家触达</strong>。</p>
+    </div>
+
+    <div class="grid3">
+      <div class="mini">
+        <span class="tag t-indigo">最值得直接参考</span>
+        <h4>noique/cross-border-ecommerce-skills</h4>
+        <p>58 个 skill、13 条业务链，覆盖品牌战略 → 亚马逊运营 → DTC → 财务/资金 → 联盟 → 欧盟渠道 → 海外买家开发 → VOC。它内置的 <strong>「证据闸」机制</strong>（数据不足就说"数据不足"，而不是编数字）是整个生态里最值得抄的设计理念。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-green">最值得直接复用</span>
+        <h4>chnjames/tradehot-skill<br>+ AccioWork/agent-skills</h4>
+        <p>一个做外贸情报（HS Code、关税速查、风险预警、汇率与外汇管制），一个做关税与 HS 编码查询。<strong>这两个正好补上前两份报告里最实操、最容易出错的部分</strong>，且都是单文件 SKILL.md，装即用。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-gold">最值得学习架构</span>
+        <h4>clawec-agents<br>+ markwaveio 选品套件</h4>
+        <p>前者示范了「一个 Agent 调度 N 个 API Skill」的分层结构；后者示范了<strong>把"防被假数据骗"的纪律写进 skill 本身</strong>（关键词污染自检、三源口径对齐）。这两个设计思路可直接迁移到你的选品与市场调研环节。</p>
+      </div>
+    </div>
+
+    <h3>四个关键判断</h3>
+    <ol>
+      <li><strong>生态高度集中，但存在结构性空白。</strong>约 70% 的高相关仓库围绕 Amazon 运营（选品、Listing、广告、VOC）。而「<strong>食品/农产品出口合规</strong>」方向的 skill 只有零星一两个，且都聚焦<strong>中国国内</strong>标准（GB 7718 标签、GB 2760 添加剂），<strong>没有</strong>做「出口目的国准入」的成熟 skill。你上一份报告里查的那些欧盟 MRL、FDA FSVP、日本肯定列表 —— 目前没有现成工具帮你自动化。</li>
+      <li><strong>最值得学的不是功能，是「诚实机制」。</strong>两个高质量仓库都把「不编数据」写进了 skill 本身：noique 的「证据闸」要求每条事实标注来源与日期；markwaveio 内置关键词污染自检与三源口径对齐。<strong>这正是跨境分析最容易翻车的地方</strong> —— 我也在这次调研中看到不少仓库在描述里堆砌漂亮话却无实际交付。</li>
+      <li><strong>许可证是最大的坑。</strong>本主题下星标最高的几个中文仓库（含 1302⭐、936⭐ 的头部项目）<strong>未声明任何开源许可证</strong>。按著作权法默认「保留所有权利」，<strong>直接拿来做商业项目存在法律风险</strong>。可放心商用的是 MIT / CC0 / MIT-0 那几个（见第 05 节标注）。</li>
+      <li><strong>技术栈高度趋同，迁移成本很低。</strong>几乎全部是「<code>SKILL.md</code> + <code>references/</code> + <code>scripts/</code>」的 Markdown 驱动结构，配 MCP 取数据。<strong>这意味着你不需要懂复杂工程就能改</strong> —— 改的就是自然语言写的工作流文档。</li>
+    </ol>
+  </section>
+
+  <!-- 1 -->
+  <section id="s1">
+    <h2><span class="num">01</span>检索方法 <span class="en">METHODOLOGY</span></h2>
+    <p>用 <code>gh api search/repositories</code> 按星标排序检索，覆盖 20 组关键词（中英双语），共命中 100+ 仓库，人工筛出 40 个高相关项。检索关键词：</p>
+    <div class="grid2">
+      <div class="mini">
+        <h4>英文关键词</h4>
+        <p style="font-size:13.5px">claude skills ecommerce · ecommerce agent skill · mcp server shopify · mcp server amazon selling partner · ecommerce mcp server · tiktok shop mcp server · shopify claude skill · export compliance mcp server · product listing generator skill</p>
+      </div>
+      <div class="mini">
+        <h4>中文关键词</h4>
+        <p style="font-size:13.5px">跨境电商 skill · 亚马逊 选品 skill · 外贸 mcp · 选品 agent 开源 · 食品 合规 skill · 茶叶 claude skill</p>
+      </div>
+    </div>
+    <div class="callout c-info">
+      <div class="h">关于"skill 类项目"的界定</div>
+      <p>本报告覆盖三类：<strong>① Skill</strong>（<code>SKILL.md</code> 形式的工作流文档，给 AI 装 SOP）；<strong>② MCP Server</strong>（给 AI 接外部数据/工具的服务端）；<strong>③ Agent</strong>（可调度多个 skill 的角色定义）。这三者常组合使用，故一并纳入。</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="s2">
+    <h2><span class="num">02</span>分类总览 <span class="en">LANDSCAPE</span></h2>
+
+    <div class="chart-box">
+      <div class="ttl">生态分布：高相关仓库按方向归类</div>
+      <svg viewBox="0 0 680 250" width="100%" role="img" aria-label="生态分布">
+        <g font-family="Segoe UI" font-size="12.5" fill="#3c4440">
+          <text x="0" y="20" font-weight="700" fill="#1b1e1c">亚马逊运营专项（占比最高）</text>
+          <rect x="0" y="28" width="330" height="20" rx="4" fill="#2f4b8f"/>
+          <text x="340" y="43" font-size="12" fill="#6b7a72">~70%</text>
+
+          <text x="0" y="76" font-weight="700" fill="#1b1e1c">选品 / 市场调研</text>
+          <rect x="0" y="84" width="180" height="20" rx="4" fill="#4560a8"/>
+          <text x="190" y="99" font-size="12" fill="#6b7a72">~14%</text>
+
+          <text x="0" y="132" font-weight="700" fill="#1b1e1c">视觉 / 素材生成</text>
+          <rect x="0" y="140" width="150" height="20" rx="4" fill="#5f78bb"/>
+          <text x="160" y="155" font-size="12" fill="#6b7a72">~12%</text>
+
+          <text x="0" y="188" font-weight="700" fill="#1b1e1c">外贸情报 / 合规 / 风控</text>
+          <rect x="0" y="196" width="95" height="20" rx="4" fill="#a8761a"/>
+          <text x="105" y="211" font-size="12" fill="#6b7a72">~7%　← 你的缺口在这里</text>
+
+          <text x="400" y="20" font-weight="700" fill="#1b1e1c">平台 API MCP</text>
+          <rect x="400" y="28" width="120" height="20" rx="4" fill="#1f6b4a"/>
+          <text x="530" y="43" font-size="12" fill="#6b7a72">Shopify 为主</text>
+
+          <text x="400" y="76" font-weight="700" fill="#1b1e1c">营销 / BI / 财务</text>
+          <rect x="400" y="84" width="105" height="20" rx="4" fill="#6b4b9a"/>
+          <text x="515" y="99" font-size="12" fill="#6b7a72">相对成熟</text>
+
+          <text x="400" y="132" font-weight="700" fill="#1b1e1c">合集 / 导航类</text>
+          <rect x="400" y="140" width="140" height="20" rx="4" fill="#98a49d"/>
+          <text x="550" y="155" font-size="12" fill="#6b7a72">星标极高</text>
+
+          <text x="400" y="188" font-weight="700" fill="#1b1e1c">食品 / 茶叶专项</text>
+          <rect x="400" y="196" width="14" height="20" rx="4" fill="#b5342a"/>
+          <text x="424" y="211" font-size="12" fill="#b5342a" font-weight="700">≈0　空白</text>
+        </g>
+      </svg>
+      <div class="cap">条形长度表示该方向在高相关仓库中的相对占比（基于本次检索样本估算）。最值得注意的两条：<strong>合规/风控方向明显偏薄</strong>，<strong>食品/茶叶专项基本空白</strong>。</div>
+    </div>
+
+    <h3>2.1 核心仓库一览（按方向分类）</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>仓库</th><th>⭐</th><th>语言</th><th>许可证</th><th>核心功能</th><th>适用场景</th><th>借鉴度</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="repo">noique/cross-border-ecommerce-skills</td>
+            <td class="num-cell">63</td><td>Python</td><td><span class="pill p3">NOASSERTION</span></td>
+            <td>58 个 skill / 13 条链：品牌战略、亚马逊运营、DTC、财务与资金、联盟、欧盟渠道、海外买家开发、Reddit VOC。内置「证据闸」</td>
+            <td>全流程框架参考</td>
+            <td><span class="pill p1">极高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">hikari0511/awesome-amazon-ec-skills</td>
+            <td class="num-cell">188</td><td>—</td><td><span class="pill p1">CC0-1.0</span></td>
+            <td>亚马逊跨境 Skill 合集（中文优先），选品→竞品→Listing→视觉→BI→广告→评论全流程 + 1688 上游</td>
+            <td>导航 / 选型</td>
+            <td><span class="pill p1">极高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">uni-infiniteai/clawec-agents</td>
+            <td class="num-cell">52</td><td>Shell</td><td><span class="pill p1">MIT</span></td>
+            <td>Amazon / TikTok / Shopee / Ozon 四平台 91 个 API Skill + 4 个 Agent，一键安装到 8 种 IDE</td>
+            <td>多平台数据接入</td>
+            <td><span class="pill p1">高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">liangdabiao/amazon-sorftime-research-MCP-skill</td>
+            <td class="num-cell">936</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>亚马逊选品：Listing 全维度穿透分析、全品类分析、关键词分析、差评分析、市场调研（接 Sorftime/卖家精灵等 MCP）</td>
+            <td>亚马逊选品</td>
+            <td><span class="pill p2">高（仅思路）</span></td>
+          </tr>
+          <tr>
+            <td class="repo">liangdabiao/ecom-details-image</td>
+            <td class="num-cell">1302</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>电商视觉创作 Skill，25 个高质量案例 + 完整提示词（纯色底主图、场景图、平铺图、详情图），走 GPT-Image 生成</td>
+            <td>主图 / 详情页素材</td>
+            <td><span class="pill p2">高（仅思路）</span></td>
+          </tr>
+          <tr>
+            <td class="repo">zach22-1999/amazon-skills</td>
+            <td class="num-cell">205</td><td>Python</td><td><span class="pill p1">MIT</span></td>
+            <td>选品验证、Listing 健康检查、搜索词分析、CVR 阈值诊断（含 SIF 数据）</td>
+            <td>亚马逊运营</td>
+            <td><span class="pill p1">高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">zhuoxinsi/amazon-automation-skills</td>
+            <td class="num-cell">50</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>亚马逊运营全流程：Listing 生成、选品调研、广告策略、店铺管理，可接入 AI Agent</td>
+            <td>亚马逊运营</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">markwaveio/cross-border-selection-kit</td>
+            <td class="num-cell">9</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>选品自动化：Amazon 信号 → Ad Library / Trends / 1688 三源交叉验证（含关键词污染自检）→ 六维打分 → 可视化报告</td>
+            <td>选品方法论</td>
+            <td><span class="pill p1">极高（方法论）</span></td>
+          </tr>
+          <tr>
+            <td class="repo">chnjames/tradehot-skill</td>
+            <td class="num-cell">18</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>外贸情报：日报、平台政策、<strong>HS Code / 关税速查</strong>、准入与认证参考、贸易日历、汇率与支付风险、风险预警、选品雷达（9 种报告）</td>
+            <td>关税 / 准入 / 情报</td>
+            <td><span class="pill p1">极高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">AccioWork/agent-skills</td>
+            <td class="num-cell">13</td><td>—</td><td><span class="pill p1">MIT-0</span></td>
+            <td>免费跨境 skill：<strong>进口关税与 HS 编码计算器</strong>（CN→US，无需 API Key），供应商查找/选品/Listing/评论分析（规划中）</td>
+            <td>关税查询</td>
+            <td><span class="pill p1">高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">wo9230/osint-agent</td>
+            <td class="num-cell">19</td><td>Python</td><td><span class="pill p3">NOASSERTION</span></td>
+            <td>外贸客户背调 / 供应商尽调 / 买家资信 / 竞品情报 / 亚马逊卖家背调，15+ 调查类型，输出 HTML 报告 + 红黄绿风险评级</td>
+            <td>买家与供应商风控</td>
+            <td><span class="pill p1">极高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">handaas/customs-mcp-server</td>
+            <td class="num-cell">14</td><td>Python</td><td><span class="pill p4">无</span></td>
+            <td>进出口贸易数据查询 MCP：出口趋势、商品类别统计、订单地理分布、海外认证信息</td>
+            <td>海关数据</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">bettermen/food-safety-compliance</td>
+            <td class="num-cell">0</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>中国食品安全合规：标签审核（GB 7718）、营养标签计算（GB 28050）、添加剂判定（GB 2760）、HACCP 文件（GB 14881），覆盖 2027 新标签标准</td>
+            <td>国内端标签合规</td>
+            <td><span class="pill p3">中（国内标准）</span></td>
+          </tr>
+          <tr>
+            <td class="repo">GeLi2001/shopify-mcp</td>
+            <td class="num-cell">238</td><td>TypeScript</td><td><span class="pill p1">MIT</span></td>
+            <td>Shopify Admin API MCP：商品/客户/订单/库存/Metafield 全套 CRUD（31 个工具），GraphQL Admin API 2026-01</td>
+            <td>独立站自动化</td>
+            <td><span class="pill p1">高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">Cesarjoquin/shopify-mcp</td>
+            <td class="num-cell">142</td><td>TypeScript</td><td><span class="pill p1">MIT</span></td>
+            <td>Shopify MCP：商品、客户、订单、库存管理</td>
+            <td>独立站自动化</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">christian-ramos/mcp-amazon-sp-api</td>
+            <td class="num-cell">4</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>Amazon SP-API MCP：19 个 scope 下 55+ 工具，多市场支持</td>
+            <td>亚马逊店铺数据</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">motiful/product-shots</td>
+            <td class="num-cell">93</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>一张产品图 → 全套电商视觉（主图、A+ 详情页等）</td>
+            <td>素材量产</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">thatrebeccarae/claude-marketing</td>
+            <td class="num-cell">160</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>营销部门套件：Klaviyo、Shopify、GA4、Looker Studio、付费媒体 skill 包</td>
+            <td>营销自动化</td>
+            <td><span class="pill p2">中高</span></td>
+          </tr>
+          <tr>
+            <td class="repo">mathiaschu/ecommerce-bi</td>
+            <td class="num-cell">10</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>电商 BI 报告 skill：自动识别 Tiendanube/Shopify/WooCommerce CSV，跑 38 项分析</td>
+            <td>经营数据分析</td>
+            <td><span class="pill p2">中</span></td>
+          </tr>
+          <tr>
+            <td class="repo">coral870921-source/Ozon-Profit-Skills</td>
+            <td class="num-cell">24</td><td>—</td><td><span class="pill p1">MIT</span></td>
+            <td>跨境自动化：Listing 自动翻译成任意语言、SEO 标签与图片提示词生成、利润追踪</td>
+            <td>多语言上架</td>
+            <td><span class="pill p2">中</span></td>
+          </tr>
+          <tr>
+            <td class="repo">ComposioHQ/awesome-claude-skills</td>
+            <td class="num-cell">76529</td><td>Python</td><td><span class="pill p3">未标</span></td>
+            <td>Claude Skills 总合集（全领域，非跨境专属）</td>
+            <td>全局导航</td>
+            <td><span class="pill p3">中（入口）</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--muted)">星标与许可证为 2026-10-05 检索快照。<span class="pill p4">无</span> = 仓库未声明许可证（默认保留所有权利，商业复用有风险）；<span class="pill p3">NOASSERTION</span> = 有自定义许可文件但非标准 SPDX 标识，需人工阅读原文。</p>
+  </section>
+
+  <!-- 3 -->
+  <section id="s3">
+    <h2><span class="num">03</span>深度点评：值得细看的 8 个 <span class="en">DEEP DIVE</span></h2>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">noique/cross-border-ecommerce-skills</span>
+        <span class="st">⭐63 · Python · 2026-08 更新</span>
+        <span class="pill p1">最推荐</span>
+      </div>
+      <div class="desc">58 个 AI skill 模板，覆盖跨境电商完整工作流。53 个单文件 skill + 5 个多文件包（含 references/、templates/、Python 脚本、CSV 追踪表），另有 7 个独立工具（反链/红人提取、Trustpilot 抓取、联系方式提取、API 限速器、浏览器抓取等）。</div>
+      <div class="row"><b>13 条业务链</b>：品牌战略(10) · 亚马逊(14) · DTC 站点(5) · 社媒与 KOL(5) · 财务与资金(8) · 联盟与伙伴(2) · 渠道与市场进入(2) · VOC(3) · 线下零售(1)</div>
+      <div class="row"><b>技术栈</b>：Markdown skill + Python 工具脚本；兼容 Claude Code（<code>~/.claude/commands/</code>）、Google Antigravity（<code>SKILL.md</code>）及任何支持 skill 的 AI IDE</div>
+      <div class="row"><b>最独特的设计</b>：财务与资金链（单位经济、<strong>FX/收款</strong>、税务 nexus、现金流、定价、对账、主体架构、资本结构）；欧盟渠道进入（SSPV · RCS · 增长飞轮）；价格体系与渠道冲突防护</div>
+      <div class="borrow"><b>借鉴点</b>：这是唯一一个把「财务/汇率/结算」和「欧盟渠道进入」做成独立 skill 链的仓库 —— 正好对应前两份报告里的结算与欧盟合规章节。<strong>建议通读它的 skill 清单结构</strong>，作为自有 skill 体系的骨架参考。注意许可证为 NOASSERTION，商用前需读原文。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">hikari0511/awesome-amazon-ec-skills</span>
+        <span class="st">⭐188 · CC0-1.0 · 2026-05 更新</span>
+        <span class="pill p1">最佳导航</span>
+      </div>
+      <div class="desc">亚马逊跨境 AI Agent Skills 中文合集。明确划定了收录范围（只收 Amazon + 1688/Alibaba 供货上游，不收其他平台与国内平台），并按业务环节分类索引。</div>
+      <div class="row"><b>分类</b>：选品调研 · 竞品分析 · Listing 与内容 · 视觉与素材 · 数据分析与 BI · 广告与流量 · 评论与口碑 · 客服与售后 · 通用底座</div>
+      <div class="row"><b>独特价值</b>：README 里有一节「<strong>什么是 Claude Skill / Plugin / MCP？</strong>」，用一张表把四者的定位讲清楚了（Skill = SOP 文档；Plugin = IDE 扩展；MCP = 数据接口；Subagent = 专家角色）—— 这是入门这个生态最省时间的一页</div>
+      <div class="row"><b>许可证</b>：CC0-1.0（公有领域，可自由使用）</div>
+      <div class="borrow"><b>借鉴点</b>：<strong>先读它的概念表</strong>，建立「Skill / MCP / Agent 怎么分工」的认知；再顺着它的分类清单去挑你要的工具。CC0 意味着内容可自由复用。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">chnjames/tradehot-skill</span>
+        <span class="st">⭐18 · Python 3.11+ · 2026-06 更新</span>
+        <span class="pill p1">最贴你的场景</span>
+      </div>
+      <div class="desc">中文外贸情报 Skill。把分散的外贸信息标准化、去重、排序，输出可执行的 Markdown 业务简报。支持 11 种场景输出。</div>
+      <div class="row"><b>能力</b>：外贸 HOT 日报 · 平台政策监控（Amazon/TikTok Shop/Shopee）· 国家市场简报 · <strong>品类与 HS Code 分析</strong> · <strong>关税与准入速查</strong>（税率、认证、FTA、贸易救济）· 贸易日历与备货规划 · 竞争国动态（越南/印度/墨西哥）· 物流中断与运价追踪 · <strong>汇率与支付风险</strong>（高波动货币、收款风险、外汇管制）· 风险预警 · 选品雷达</div>
+      <div class="row"><b>技术栈</b>：Python 3.11+，Codex / Hermes Agent 兼容，含 GitHub Actions 校验工作流</div>
+      <div class="row"><b>作者已明确声明</b>：不替代法律、税务、海关、认证专业意见，高风险事项以官方文件为准</div>
+      <div class="borrow"><b>借鉴点</b>：它的能力清单几乎就是前两份报告的目录 —— <strong>HS Code、关税、准入认证、外汇管制、运价、风险预警</strong>。可以直接装来当"情报巡检"工具用（自然语言触发：「查一下 HS Code 0902 的出口机会」「家具出口美国关税多少」）。<span class="pill p4">注意：未声明许可证</span></div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">markwaveio/cross-border-selection-kit</span>
+        <span class="st">⭐9 · Python · 2026-07 更新</span>
+        <span class="pill p1">最佳方法论</span>
+      </div>
+      <div class="desc">选品自动化套件：一句「跑一轮跨境选品」，自动完成 Amazon 信号抓取 → 三源交叉验证 → 六维打分 → 可视化报告。可配定时自动运行。</div>
+      <div class="row"><b>五步漏斗</b>：① Amazon 信号（Best Sellers / Movers&Shakers）→ ② 归一化去重 → ③ 三源交叉验证（Ad Library 投放热度 / Google Trends 搜索趋势 / 1688 供应链价格带）→ ④ 六维打分（需求/趋势/竞争/供应/利润/风险）→ ⑤ 可视化报告 + INDEX 一页纸</div>
+      <div class="row"><b>最值得学的地方 —— 把纪律写进 skill</b>：关键词污染自检（低于阈值 0.6 判污染）· 自动收窄重试（最多 2 次）· <strong>三源口径对齐校验</strong>（口径不一致的维度打分自动封顶）· 污染黑名单加速（识别"养生联盟蹭流量、跨品类同名词"套路）</div>
+      <div class="row"><b>技术栈</b>：Node + Python + puppeteer + Chrome DevTools MCP；适配 Claude Code / Codex / OpenCLAW；内置 installer skill 引导部署</div>
+      <div class="borrow"><b>借鉴点</b>：<strong>方法论 > 代码</strong>。「三源交叉验证 + 六维打分 + 污染自检」这套思路可以直接迁移 —— 比如验证"某款茶在德国有没有需求"，同样可以 Amazon.de 信号 + Google Trends 德国 + 阿里国际站供应价三源对照。它的 installer skill 设计（交互提问 → 生成配置 → 自检）也值得抄。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">wo9230/osint-agent</span>
+        <span class="st">⭐19 · Python · 2026-09 更新</span>
+        <span class="pill p1">最实用风控</span>
+      </div>
+      <div class="desc">外贸客户背调 / 供应商尽调 / B2B 商业情报系统。用公开数据（OSINT）在签合同、发样品、走信用证之前，15 分钟给对方做一次背景核查，输出含公司背景、财务分析、供应链溯源、决策人画像、风险评级、脉络分析的专业 HTML 报告。</div>
+      <div class="row"><b>15+ 调查类型</b>：公司 / 个人 / 供应商 / 竞品 / 亚马逊卖家 / 行业 / 买家画像等；支持 <code>/osint Anker company</code>、<code>/osint "张三" person</code>、<code>/osint 某工厂 supplier</code> 这类命令式调用</div>
+      <div class="row"><b>风险信号</b>：域名注册 30 天的新公司、登记地址与实际经营不符、制裁名单命中、自称规模与数字足迹不匹配 → 自动标红（🔴/🟡/🟢 三级）</div>
+      <div class="row"><b>技术栈</b>：Claude Code + MCP + Python 3.10+ + Node 18+；需配置 API Key（<code>.env</code>）</div>
+      <div class="borrow"><b>借鉴点</b>：你上一份报告里提到「西非/中东外汇管制与回款风险」—— 这个工具正是解决"对方到底靠不靠谱"的。<strong>出海最容易亏的不是卖不动，是遇到假买家/假供应商</strong>。建议在首次大额合作前用它做一次背调。许可证 NOASSERTION。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">uni-infiniteai/clawec-agents</span>
+        <span class="st">⭐52 · Shell · MIT · 2026-09 更新</span>
+        <span class="pill p1">最佳架构范例</span>
+      </div>
+      <div class="desc">跨境电商 AI Agent 开源仓库。4 个平台 Agent（Amazon / TikTok / Shopee / Ozon），共 <strong>91 个 API Skill</strong>（选品、榜单、趋势、详情、流量词、达人/直播/品牌等）。</div>
+      <div class="row"><b>分层结构</b>：Agent（理解业务意图、调度技能、按规定格式交付）→ <code>.clawec/skills/</code> 下的 API 能力 → 安装脚本按工具写入对应目录</div>
+      <div class="row"><b>跨工具适配（亮点）</b>：一套源定义，安装脚本可输出到 Cursor / Claude Code / Codex / GitHub Copilot / Antigravity / Gemini CLI / OpenCode / Aider 共 8 种工具的对应目录</div>
+      <div class="row"><b>技能分布</b>：Amazon 20 · TikTok 33 · Shopee 21 · Ozon 17</div>
+      <div class="borrow"><b>借鉴点</b>：<strong>「一套源定义 → 多工具安装」</strong>这个设计值得直接抄。如果你要自建 skill 体系，用这种方式组织就不用为每个 AI 工具各维护一份。MIT 许可，可自由复用。另外它的 <code>AGENT.md</code> + <code>SKILL.md</code> 双层结构，是"角色定义"与"能力定义"分离的干净范例。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">zach22-1999/amazon-skills</span>
+        <span class="st">⭐205 · MIT · Python · 2026-08 更新</span>
+        <span class="pill p1">可直接用</span>
+      </div>
+      <div class="desc">亚马逊卖家实战经验沉淀成的可安装 skill。作者在 README 里明确「不放品牌私有资料、真实店铺数据或内部工作成果」—— 边界清晰。</div>
+      <div class="row"><b>已发布 skill</b>：<code>zach-seller-skill-creator</code>（skill 创建器）· <code>zach-feature-demand-validator</code>（卖点需求验证）· <code>zach-listing-health-checker</code>（Listing 健康检查）· <code>zach-search-term-analyzer</code> / <code>zach-search-term-report-analyzer</code>（搜索词分析）· <code>zach-sif-cvr-threshold-analyzer</code>（CVR 阈值诊断）</div>
+      <div class="row"><b>安装方式</b>：自然语言安装（「帮我安装 zach-seller-skill-creator，来源仓库 amazon-skills」），支持 Claude Code / Codex / Cursor</div>
+      <div class="row"><b>许可证</b>：MIT</div>
+      <div class="borrow"><b>借鉴点</b>：它示范了<strong>「卖家把实战经验做成 skill」</strong>这条路径 —— 完全可以照这个模式，把「茶叶出口合规检查」沉淀成一套自有 skill。MIT 许可，可自由参考。另外它的 <code>docs/release-gate.md</code>（发布前固定流程）也值得看，是 skill 工程化的好习惯。</div>
+    </div>
+
+    <div class="rcard">
+      <div class="head">
+        <span class="nm">GeLi2001/shopify-mcp</span>
+        <span class="st">⭐238 · MIT · TypeScript · 2026-04 更新</span>
+        <span class="pill p1">独立站必备</span>
+      </div>
+      <div class="desc">Shopify Admin API 的 MCP Server，通过 GraphQL API 操作店铺数据。共 31 个工具。</div>
+      <div class="row"><b>工具覆盖</b>：商品管理(8) · 客户管理(8) · 订单管理(10，含查找/取消/关闭/标记已付/履约/退款) · Metafield(3) · 库存(1) · 标签(1)；支持游标分页、排序、Shopify 原生查询语法透传</div>
+      <div class="row"><b>技术栈</b>：TypeScript + Node 18+；GraphQL Admin API 2026-01；支持 Client Credentials（2026-01 起 Dev Dashboard 新应用）与静态 token 双认证</div>
+      <div class="borrow"><b>借鉴点</b>：如果你要做独立站（第 03 号方案里的"品牌层"），这个 MCP 能让你用自然语言管理商品与订单。<strong>MIT 许可 + 238 星 + 活跃维护，是这批 MCP 里最成熟的一个</strong>。Shopify 2026-01 的认证变更它也跟上了，说明维护质量可信。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="s4">
+    <h2><span class="num">04</span>对本项目有哪些参考价值 <span class="en">RELEVANCE MAPPING</span></h2>
+
+    <p>把上面这些仓库映射到本项目各业务环节 —— 哪些能直接用、哪些只能学思路、哪些是空白需要自己补：</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>业务环节</th><th>可参考仓库</th><th>能拿到什么</th><th>成熟度</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>目的国准入 / 农残 / 认证</strong><br><span style="font-size:12px;color:var(--muted)">欧盟 MRL、FDA FSVP、日本肯定列表</span></td>
+            <td class="repo">tradehot-skill<br>AccioWork/agent-skills<br>handaas/customs-mcp-server</td>
+            <td>关税与 HS 编码速查、认证要求参考、海关数据查询</td>
+            <td><span class="pill p3">部分覆盖</span><br><span style="font-size:12px">无食品农残专项</span></td>
+          </tr>
+          <tr>
+            <td><strong>包装标签合规</strong></td>
+            <td class="repo">bettermen/food-safety-compliance</td>
+            <td>GB 7718 标签审核、GB 28050 营养标签计算、GB 2760 添加剂判定（<strong>中国标准</strong>）</td>
+            <td><span class="pill p4">仅国内端</span><br><span style="font-size:12px">出口目的国标签需自建</span></td>
+          </tr>
+          <tr>
+            <td><strong>选品 / 市场验证</strong></td>
+            <td class="repo">cross-border-selection-kit<br>clawec-agents<br>amazon-sorftime-research-MCP-skill</td>
+            <td>三源交叉验证方法论、六维打分、多平台榜单与趋势数据</td>
+            <td><span class="pill p1">成熟</span></td>
+          </tr>
+          <tr>
+            <td><strong>Listing / 产品文案</strong></td>
+            <td class="repo">amazon-skills<br>amazon-automation-skills<br>Ozon-Profit-Skills</td>
+            <td>Listing 生成与健康检查、搜索词分析、多语言翻译与 SEO 标签</td>
+            <td><span class="pill p1">成熟</span></td>
+          </tr>
+          <tr>
+            <td><strong>主图 / 详情页素材</strong></td>
+            <td class="repo">ecom-details-image<br>ecommerce-image-suite<br>product-shots</td>
+            <td>纯色底主图、场景图、平铺图、详情图的提示词模板与生成流程</td>
+            <td><span class="pill p1">成熟</span><br><span style="font-size:12px">1302⭐ 头部项目</span></td>
+          </tr>
+          <tr>
+            <td><strong>海外买家触达 / 背调</strong></td>
+            <td class="repo">osint-agent<br>HONGV_CustomerAcquisition<br>cross-border-ecommerce-skills（买家开发链）</td>
+            <td>买家真实性核查、风险评级、目标公司收集与评分、Outbound 获客</td>
+            <td><span class="pill p2">可用</span></td>
+          </tr>
+          <tr>
+            <td><strong>独立站搭建与运营</strong></td>
+            <td class="repo">GeLi2001/shopify-mcp<br>shopify-hydrogen-skills<br>SaadBenhmid/shopify-store-builder-skill</td>
+            <td>商品/订单/库存的自然语言管理、主题构建与审计</td>
+            <td><span class="pill p1">成熟</span></td>
+          </tr>
+          <tr>
+            <td><strong>营销 / 广告 / 红人</strong></td>
+            <td class="repo">claude-marketing<br>cross-border-ecommerce-skills（KOL 链）</td>
+            <td>Klaviyo / GA4 / 付费媒体 skill 包、红人营销与社媒内容日历</td>
+            <td><span class="pill p2">可用</span></td>
+          </tr>
+          <tr>
+            <td><strong>经营数据 / BI</strong></td>
+            <td class="repo">ecommerce-bi<br>coupler-io/skills</td>
+            <td>CSV 自动识别 + 38 项分析、多源数据查询</td>
+            <td><span class="pill p2">可用</span></td>
+          </tr>
+          <tr>
+            <td><strong>汇率 / 结算 / 财务</strong></td>
+            <td class="repo">cross-border-ecommerce-skills（财务链）<br>tradehot-skill（汇率风险）</td>
+            <td>单位经济、FX/收款、税务 nexus、现金流、定价、对账</td>
+            <td><span class="pill p2">有框架</span><br><span style="font-size:12px">无现成工具</span></td>
+          </tr>
+          <tr>
+            <td><strong>茶叶 / 食品出口专项</strong></td>
+            <td style="color:var(--red)">— 无 —</td>
+            <td style="color:var(--red)">这是本次检索确认的<strong>空白区</strong></td>
+            <td><span class="pill p4">空白</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-verdict">
+      <div class="h">最重要的一条：缺口即机会</div>
+      <p>整个生态里<strong>没有</strong>任何仓库在做「食品/农产品出口目的国准入」。原因不难理解：这个领域的知识更新快（欧盟 MRL 每年改、新烟碱 2026-03 降限、2027 有机高风险清单）、需要一手官方来源、且各国差异极大 —— <strong>通用仓库不愿意维护这种高时效成本的知识</strong>。</p>
+      <p>而这恰好是本项目已掌握的内容：<strong>前两份报告里的合规内容，本身就是稀缺资产</strong>。把它结构化成一个 <code>SKILL.md</code>（比如「茶叶出口合规检查」），配上一份「目的国准入对照表」的 references，就是一个这个生态里还不存在的东西。这不是"做工具替代做正事"—— 它是把已经做过的正事（合规调研）沉淀成可复用的资产。</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section id="s5">
+    <h2><span class="num">05</span>技术栈与架构共性 <span class="en">TECH PATTERNS</span></h2>
+
+    <div class="grid3">
+      <div class="mini">
+        <span class="tag t-indigo">结构共性</span>
+        <h4>Markdown 驱动</h4>
+        <p>几乎全部是 <code>SKILL.md</code> + <code>references/</code> + <code>templates/</code> + <code>scripts/</code> 的目录结构。SKILL.md 写「什么时候用、怎么做、输出什么」，references 放知识，scripts 放 Python/Node 工具。<strong>改的就是自然语言文档，不需要复杂工程能力。</strong></p>
+      </div>
+      <div class="mini">
+        <span class="tag t-green">数据层共性</span>
+        <h4>MCP 取数</h4>
+        <p>数据几乎都通过 MCP Server 接入：Shopify Admin API、Amazon SP-API、Sorftime/卖家精灵/SIF 等第三方数据源。<strong>Skill 管流程，MCP 管数据</strong> —— 这是标准分工。</p>
+      </div>
+      <div class="mini">
+        <span class="tag t-gold">分发共性</span>
+        <h4>自然语言安装</h4>
+        <p>主流做法是「把仓库地址发给 AI，说'帮我安装'」，由 AI 读取仓库并写入对应工具目录。部分仓库（如 clawec-agents、cross-border-selection-kit）带 <code>install.sh</code> 或 installer skill 做自动化。<strong>门槛低到不需要命令行。</strong></p>
+      </div>
+    </div>
+
+    <h3>5.1 许可证风险清单（重要）</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>许可证</th><th>含义</th><th>商用可行性</th><th>本次命中的仓库</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MIT / MIT-0</strong></td>
+            <td>可自由使用、修改、商用，需保留版权声明（MIT-0 连声明都免）</td>
+            <td><span class="pill p1">可商用</span></td>
+            <td class="repo">clawec-agents · zach22-1999/amazon-skills · GeLi2001/shopify-mcp · Cesarjoquin/shopify-mcp · Ozon-Profit-Skills · AccioWork/agent-skills</td>
+          </tr>
+          <tr>
+            <td><strong>CC0-1.0</strong></td>
+            <td>公有领域，放弃所有权利</td>
+            <td><span class="pill p1">可商用</span></td>
+            <td class="repo">hikari0511/awesome-amazon-ec-skills</td>
+          </tr>
+          <tr>
+            <td><strong>NOASSERTION</strong></td>
+            <td>有许可文件但不是标准 SPDX 标识，需人工阅读原文判断</td>
+            <td><span class="pill p3">需核实</span></td>
+            <td class="repo">noique/cross-border-ecommerce-skills · wo9230/osint-agent</td>
+          </tr>
+          <tr>
+            <td><strong>无许可证</strong></td>
+            <td>默认「保留所有权利」—— <strong>法律上你不被授权使用、修改或分发</strong></td>
+            <td><span class="pill p4">不可商用</span></td>
+            <td class="repo">liangdabiao/ecom-details-image（1302⭐）· liangdabiao/amazon-sorftime-research-MCP-skill（936⭐）· tradehot-skill · zhuoxinsi/amazon-automation-skills · cross-border-selection-kit · handaas/customs-mcp-server</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="h">这条必须说清楚</div>
+      <p>本主题下<strong>星标最高的两个仓库（1302⭐ 和 936⭐）都没有许可证</strong>。没有许可证 ≠ 免费，而是"作者没授权"。<strong>学习思路、参考结构是安全的；直接复制代码/提示词进商业项目则有法律风险。</strong>如果要用，建议：① 先给作者开 Issue 询问授权；② 或只借鉴方法论、自己重写实现。</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="s6">
+    <h2><span class="num">06</span>落地建议 <span class="en">ACTION PLAN</span></h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="st">第一步 · 建立认知（半天）</div>
+        <div class="sd">读 <span class="repo">hikari0511/awesome-amazon-ec-skills</span> 的「什么是 Skill / Plugin / MCP」概念表（CC0，可自由参考），搞清楚三者的分工。这是最高性价比的入门。</div>
+      </div>
+      <div class="step">
+        <div class="st">第二步 · 装两个即用工具（1 天）</div>
+        <div class="sd">装 <span class="repo">chnjames/tradehot-skill</span>（关税/准入/情报巡检）和 <span class="repo">AccioWork/agent-skills</span> 的关税计算器（MIT-0，CN→US 关税与 HS 编码查询）。这两个直接补上你合规与定价环节最实操的部分。</div>
+      </div>
+      <div class="step">
+        <div class="st">第三步 · 抄方法论，不抄代码（1 周）</div>
+        <div class="sd">精读 <span class="repo">markwaveio/cross-border-selection-kit</span> 的「三源交叉验证 + 六维打分 + 污染自检」和 <span class="repo">noique/cross-border-ecommerce-skills</span> 的 13 链结构。<strong>只学设计思路</strong>（两者许可都不明确），把方法迁移到"验证某款茶在某个市场有没有需求"上。</div>
+      </div>
+      <div class="step">
+        <div class="st">第四步 · 补生态空白（2–4 周）</div>
+        <div class="sd">把前两份报告里的合规内容（欧盟 MRL、FDA FSVP、日本肯定列表、标签要求）结构化成一份自己的 <code>SKILL.md</code> + <code>references/</code>。参考 <span class="repo">zach22-1999/amazon-skills</span>（MIT）的组织方式。这是这个生态里目前没人做的事。</div>
+      </div>
+      <div class="step">
+        <div class="st">第五步 · 独立站与风控（放量前）</div>
+        <div class="sd">做独立站时用 <span class="repo">GeLi2001/shopify-mcp</span>（MIT，238⭐）管理商品订单；首次大额合作前用 <span class="repo">wo9230/osint-agent</span> 给海外买家做一次背调。</div>
+      </div>
+    </div>
+
+    <h3>6.1 三个不要</h3>
+    <ul class="check">
+      <li><strong>不要一次性装一堆。</strong>这批 skill 里很多是个人项目、维护质量参差。先装 2 个验证可用，再逐步加。</li>
+      <li><strong>不要把"装了工具"当成"做了事"。</strong>这些 skill 是杠杆，不是替代品。选品结论、合规判断、定价决策，最终仍要你自己核。</li>
+      <li><strong>不要忽略许可证。</strong>商用前先确认，别拿 1302⭐ 的仓库直接进产品。</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><b>检索说明</b>（2026-10-05，通过 <code>gh api search/repositories</code> 按星标排序检索）</p>
+    <ul style="font-size:12.5px;color:var(--muted);padding-left:20px">
+      <li>检索关键词共 20 组（中英双语），命中 100+ 仓库，人工筛选 40 个高相关项，本报告详列 20 个核心项 + 深度点评 8 个。</li>
+      <li>星标、fork、语言、许可证、最后推送时间均为 2026-10-05 的 GitHub API 快照，会随时间变化。</li>
+      <li>许可证字段取自 GitHub API 的 <code>license.spdx_id</code>；显示「无」表示仓库未声明许可证，显示「NOASSERTION」表示有自定义许可文件但非标准标识。</li>
+      <li>生态分布占比为基于本次检索样本的估算，非精确统计。</li>
+      <li>本次检索中出现的一批与跨境电商无关的仓库（含个别政治宣传类仓库）已排除，未纳入分析。</li>
+      <li>本报告为信息整理，不构成法律意见。开源许可证的实际适用范围请咨询专业法律意见。</li>
+    </ul>
+    <p style="margin-top:16px">编制：02 · 为 darling 制作 · 2026-10-05</p>
+  </footer>
+
+</div>
+<div class="page-pager">
+  <a href="dtc-playbook.html"><div class="lbl">← 上一份</div><div class="ttl">小批量成品茶出海 · 平台与运营指南</div><div class="sub">一包一包卖，走哪个平台？</div></a>
+  <a href="../index.html"><div class="lbl">返回</div><div class="ttl">资料包首页</div><div class="sub">三份报告总览</div></a>
+</div>
+
+</body>
+</html>
